@@ -1,89 +1,110 @@
-import React from 'react';
-import { Avatar, Card, CardContent, Typography, Button, Divider } from '@mui/material';
-import { AccountCircle, Settings, ExitToApp } from '@mui/icons-material';
+import React from "react";
 
-function UserDashboard() {
-  // Simulated user data
-  const user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    avatar: 'https://via.placeholder.com/150',
-    bio: 'Web Developer based in New York. Passionate about coding and technology.',
-  };
-
+const Dashboard = () => {
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="w-64 h-screen bg-gray-800 text-white p-6">
-        {/* Profile Section */}
-        <div className="flex items-center space-x-4 mb-10">
-          <Avatar alt={user.name} src={user.avatar} sx={{ width: 60, height: 60 }} />
-          <div>
-            <Typography variant="h6">{user.name}</Typography>
-            <Typography variant="body2">{user.email}</Typography>
+      <aside className="w-64 bg-blue-900 text-white p-6">
+        <h2 className="text-2xl font-semibold mb-6">Hostel Management</h2>
+        <nav>
+          <ul>
+            <li className="mb-4">
+              <a href="#dashboard" className="hover:text-blue-300">Dashboard</a>
+            </li>
+            <li className="mb-4">
+              <a href="#students" className="hover:text-blue-300">Students</a>
+            </li>
+            <li className="mb-4">
+              <a href="#rooms" className="hover:text-blue-300">Rooms</a>
+            </li>
+            <li className="mb-4">
+              <a href="#finances" className="hover:text-blue-300">Finances</a>
+            </li>
+            <li className="mb-4">
+              <a href="#maintenance" className="hover:text-blue-300">Maintenance</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 p-8">
+        {/* Top Navbar */}
+        <header className="flex items-center justify-between pb-6 mb-6 border-b border-gray-200">
+          <h1 className="text-3xl font-semibold text-gray-700">Dashboard</h1>
+          <div className="flex items-center space-x-4">
+            <button className="bg-gray-200 p-2 rounded-full">🔔</button>
+            <img
+              className="w-8 h-8 rounded-full"
+              src="https://via.placeholder.com/150"
+              alt="Profile"
+            />
+          </div>
+        </header>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="p-4 bg-white rounded-lg shadow-md">
+            <h3 className="text-sm font-medium text-gray-600">Total Students</h3>
+            <p className="text-2xl font-semibold text-blue-500">150</p>
+          </div>
+          <div className="p-4 bg-white rounded-lg shadow-md">
+            <h3 className="text-sm font-medium text-gray-600">Rooms Occupied</h3>
+            <p className="text-2xl font-semibold text-blue-500">120</p>
+          </div>
+          <div className="p-4 bg-white rounded-lg shadow-md">
+            <h3 className="text-sm font-medium text-gray-600">Pending Payments</h3>
+            <p className="text-2xl font-semibold text-blue-500">$3,200</p>
+          </div>
+          <div className="p-4 bg-white rounded-lg shadow-md">
+            <h3 className="text-sm font-medium text-gray-600">Maintenance Requests</h3>
+            <p className="text-2xl font-semibold text-blue-500">8</p>
           </div>
         </div>
 
-        {/* Sidebar Links */}
-        <div className="space-y-4">
-          <Button fullWidth startIcon={<AccountCircle />} variant="text" className="text-white">
-            Profile
-          </Button>
-          <Button fullWidth startIcon={<Settings />} variant="text" className="text-white">
-            Settings
-          </Button>
-          <Button fullWidth startIcon={<ExitToApp />} variant="text" className="text-white">
-            Logout
-          </Button>
-        </div>
-      </div>
+        {/* Recent Activity & Requests */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Recent Activities */}
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">Recent Activities</h2>
+            <ul className="space-y-3">
+              <li className="flex justify-between">
+                <span>John Doe checked in</span>
+                <span className="text-gray-500 text-sm">2 hrs ago</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Room 301 maintenance resolved</span>
+                <span className="text-gray-500 text-sm">1 day ago</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Jane Smith payment pending</span>
+                <span className="text-gray-500 text-sm">3 days ago</span>
+              </li>
+            </ul>
+          </div>
 
-      {/* Main Dashboard Content */}
-      <div className="flex-1 p-8 bg-gray-100">
-        <div className="flex justify-between items-center mb-6">
-          <Typography variant="h4" className="text-gray-700">
-            Dashboard
-          </Typography>
-        </div>
-
-        {/* User Info Card */}
-        <Card className="mb-6">
-          <CardContent>
-            <Typography variant="h5" className="font-bold mb-2">
-              Personal Info
-            </Typography>
-            <Divider />
-            <div className="mt-4">
-              <Typography variant="body1" className="text-gray-800">
-                <strong>Name:</strong> {user.name}
-              </Typography>
-              <Typography variant="body1" className="text-gray-800">
-                <strong>Email:</strong> {user.email}
-              </Typography>
-              <Typography variant="body1" className="text-gray-800 mt-2">
-                <strong>Bio:</strong> {user.bio}
-              </Typography>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Settings Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <Typography variant="h6" className="font-semibold text-gray-800 mb-4">
-            Settings
-          </Typography>
-          <div className="space-y-4">
-            <Button fullWidth variant="outlined" color="primary">
-              Update Profile
-            </Button>
-            <Button fullWidth variant="outlined" color="secondary">
-              Change Password
-            </Button>
+          {/* Maintenance Requests */}
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">Maintenance Requests</h2>
+            <ul className="space-y-3">
+              <li className="flex justify-between">
+                <span>Room 102 - Broken AC</span>
+                <span className="text-gray-500 text-sm">Pending</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Room 305 - Leaky faucet</span>
+                <span className="text-gray-500 text-sm">In Progress</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Room 402 - Broken window</span>
+                <span className="text-gray-500 text-sm">Completed</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default UserDashboard;
+export default Dashboard;
