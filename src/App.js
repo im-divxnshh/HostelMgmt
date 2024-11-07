@@ -6,6 +6,9 @@ function App() {
   return (
     <div className="App">
      <UserPage/>
+     <div class="text-center text-blue-500 font-bold">
+  Hello, Tailwind CSS!
+</div>
     </div>
   );
 }
