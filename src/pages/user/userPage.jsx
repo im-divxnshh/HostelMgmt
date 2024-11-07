@@ -47,6 +47,7 @@ function AuthPage() {
         {errorMessage && <p className="text-red-500 text-sm text-center">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Full Name field only for Signup */}
           {!isLogin && (
             <div>
               <TextField
@@ -70,6 +71,8 @@ function AuthPage() {
               required
             />
           </div>
+
+          {/* Password field with Eye Icon */}
           <div>
             <FormControl fullWidth variant="outlined">
               <InputLabel>Password</InputLabel>
@@ -108,6 +111,7 @@ function AuthPage() {
           </Button>
         </form>
 
+        {/* Switch between Login and Sign Up */}
         <div className="text-sm text-center text-gray-600">
           {isLogin ? (
             <p>
