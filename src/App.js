@@ -1,14 +1,12 @@
 
 import './App.css';
+import UserDashboard from './components/userComps/user';
 import UserPage from "./pages/user/userPage"
-
 function App() {
   return (
     <div className="App">
-     <UserPage/>
-     <div class="text-center text-blue-500 font-bold">
-  Hello, Tailwind CSS!
-</div>
+     {/* <UserPage/> */}
+     <UserDashboard/>
     </div>
   );
 }
