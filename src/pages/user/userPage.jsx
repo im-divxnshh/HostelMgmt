@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { TextField, Button, FormControl, InputLabel, InputAdornment, IconButton } from '@mui/material';
+import { TextField, Button, IconButton } from '@mui/material';
 
 function AuthPage() {
   // State for toggling between Login and Signup
@@ -74,30 +74,26 @@ function AuthPage() {
 
           {/* Password field with Eye Icon */}
           <div>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>Password</InputLabel>
-              <TextField
-                label="Password"
-                variant="outlined"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </FormControl>
+            <TextField
+              label="Password"
+              variant="outlined"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                ),
+              }}
+            />
           </div>
 
           <Button
