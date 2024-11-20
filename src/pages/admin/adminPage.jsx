@@ -1,123 +1,95 @@
-import React, { useState } from 'react';
+import React from "react";
 
-// Sidebar Component
-const Sidebar = ({ onSectionChange }) => {
+const AdminDashboard = () => {
   return (
-    <div className="sidebar w-64 bg-blue-800 text-white h-screen p-6 fixed top-0 left-0 shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-8">Admin Panel</h2>
-      <ul className="space-y-4">
-        <li onClick={() => onSectionChange('analytics')} className="flex items-center cursor-pointer p-3 hover:bg-blue-700 rounded-lg">
-          <i className="fas fa-chart-line mr-3 text-xl"></i>
-          <span className="text-lg">Analytics</span>
-        </li>
-        <li onClick={() => onSectionChange('user-management')} className="flex items-center cursor-pointer p-3 hover:bg-blue-700 rounded-lg">
-          <i className="fas fa-users mr-3 text-xl"></i>
-          <span className="text-lg">User Management</span>
-        </li>
-        <li onClick={() => onSectionChange('settings')} className="flex items-center cursor-pointer p-3 hover:bg-blue-700 rounded-lg">
-          <i className="fas fa-cogs mr-3 text-xl"></i>
-          <span className="text-lg">Settings</span>
-        </li>
-      </ul>
-    </div>
-  );
-};
-
-// User Management Component
-const UserManagement = () => {
-  return (
-    <div className="section p-6 bg-white rounded-lg shadow-md mt-4">
-      <h3 className="text-2xl font-semibold mb-6">User Management</h3>
-      <table className="min-w-full table-auto border-collapse">
-        <thead>
-          <tr>
-            <th className="border-b px-4 py-2 text-left">Name</th>
-            <th className="border-b px-4 py-2 text-left">Email</th>
-            <th className="border-b px-4 py-2 text-left">Status</th>
-            <th className="border-b px-4 py-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border-b px-4 py-2">John Doe</td>
-            <td className="border-b px-4 py-2">johndoe@example.com</td>
-            <td className="border-b px-4 py-2">Active</td>
-            <td className="border-b px-4 py-2"><button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Edit</button></td>
-          </tr>
-          <tr>
-            <td className="border-b px-4 py-2">Jane Smith</td>
-            <td className="border-b px-4 py-2">janesmith@example.com</td>
-            <td className="border-b px-4 py-2">Inactive</td>
-            <td className="border-b px-4 py-2"><button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Edit</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
-// Analytics Component
-const Analytics = () => {
-  return (
-    <div className="section p-6 bg-white rounded-lg shadow-md mt-4">
-      <h3 className="text-2xl font-semibold mb-6">Analytics Overview</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="analytics-card p-6 bg-blue-100 rounded-lg shadow-md text-center">
-          <h4 className="text-xl font-semibold mb-2">Total Users</h4>
-          <p className="text-3xl font-bold">1,250</p>
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* Sidebar */}
+      <div className="w-64 bg-indigo-600 text-white p-4">
+        <div className="flex justify-center items-center mb-8">
+          <h2 className="text-3xl font-bold">Hostel Admin</h2>
         </div>
-        <div className="analytics-card p-6 bg-blue-100 rounded-lg shadow-md text-center">
-          <h4 className="text-xl font-semibold mb-2">Total Revenue</h4>
-          <p className="text-3xl font-bold">$25,000</p>
+        <ul>
+          <li className="mb-6">
+            <a href="#" className="flex items-center text-lg hover:bg-indigo-700 p-2 rounded">
+              <i className="fas fa-tachometer-alt mr-3"></i> Dashboard
+            </a>
+          </li>
+          <li className="mb-6">
+            <a href="#" className="flex items-center text-lg hover:bg-indigo-700 p-2 rounded">
+              <i className="fas fa-users mr-3"></i> Students
+            </a>
+          </li>
+          <li className="mb-6">
+            <a href="#" className="flex items-center text-lg hover:bg-indigo-700 p-2 rounded">
+              <i className="fas fa-bed mr-3"></i> Rooms
+            </a>
+          </li>
+          <li className="mb-6">
+            <a href="#" className="flex items-center text-lg hover:bg-indigo-700 p-2 rounded">
+              <i className="fas fa-calendar-alt mr-3"></i> Booking
+            </a>
+          </li>
+          <li className="mb-6">
+            <a href="#" className="flex items-center text-lg hover:bg-indigo-700 p-2 rounded">
+              <i className="fas fa-cogs mr-3"></i> Settings
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 p-6">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6">Dashboard</h1>
+        
+        {/* Cards Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Students Card */}
+          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Total Students</h2>
+            <p className="text-4xl font-bold text-indigo-600">120</p>
+            <p className="text-gray-500 mt-2">Currently living in the hostel.</p>
+          </div>
+          
+          {/* Rooms Card */}
+          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Total Rooms</h2>
+            <p className="text-4xl font-bold text-indigo-600">50</p>
+            <p className="text-gray-500 mt-2">Available rooms for booking.</p>
+          </div>
+
+          {/* Bookings Card */}
+          <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+            <h2 className="text-2xl font-semibold text-gray-700 mb-4">Bookings Today</h2>
+            <p className="text-4xl font-bold text-indigo-600">15</p>
+            <p className="text-gray-500 mt-2">New bookings for today.</p>
+          </div>
         </div>
-        <div className="analytics-card p-6 bg-blue-100 rounded-lg shadow-md text-center">
-          <h4 className="text-xl font-semibold mb-2">New Signups</h4>
-          <p className="text-3xl font-bold">300</p>
+
+        {/* Recent Activities */}
+        <div className="bg-white p-6 mt-8 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-semibold text-gray-700 mb-4">Recent Activities</h2>
+          <ul className="space-y-4">
+            <li className="flex justify-between">
+              <span className="text-gray-700">New Student Registration</span>
+              <span className="text-gray-500">10 mins ago</span>
+            </li>
+            <li className="flex justify-between">
+              <span className="text-gray-700">Room Booking</span>
+              <span className="text-gray-500">1 hour ago</span>
+            </li>
+            <li className="flex justify-between">
+              <span className="text-gray-700">Maintenance Request</span>
+              <span className="text-gray-500">2 hours ago</span>
+            </li>
+            <li className="flex justify-between">
+              <span className="text-gray-700">Payment Received</span>
+              <span className="text-gray-500">4 hours ago</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   );
 };
 
-// Settings Component
-const Settings = () => {
-  return (
-    <div className="section p-6 bg-white rounded-lg shadow-md mt-4">
-      <h3 className="text-2xl font-semibold mb-6">Settings</h3>
-      <p>Manage the app settings here...</p>
-    </div>
-  );
-};
-
-// Admin Dashboard Component (Main App)
-const AdminDB = () => {
-  const [activeSection, setActiveSection] = useState('analytics'); // Default section is 'analytics'
-
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
-  };
-
-  const renderSection = () => {
-    switch (activeSection) {
-      case 'user-management':
-        return <UserManagement />;
-      case 'analytics':
-        return <Analytics />;
-      case 'settings':
-        return <Settings />;
-      default:
-        return <Analytics />;
-    }
-  };
-
-  return (
-    <div className="admin-dashboard flex">
-      <Sidebar onSectionChange={handleSectionChange} />
-      <div className="admin-dashboard-content flex-1 ml-64 p-6">
-        {renderSection()}
-      </div>
-    </div>
-  );
-};
-
-export default AdminDB;
+export default AdminDashboard;
