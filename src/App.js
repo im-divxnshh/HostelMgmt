@@ -5,6 +5,8 @@ import UserPage from "./pages/user/userPage";
 import TestFile from './components/userComps/test';
 import AdminDashboard from './pages/admin/adminPage';
 import AddStudent from './components/adminComps/addStudent';
+import ManageRoom from './components/adminComps/manageRoom';
+
 function App() {
   return (
     <Router> {/* Wrap your app in BrowserRouter */}
@@ -17,6 +19,7 @@ function App() {
           <Route path= "/admin-dashboard" element={<AdminDashboard/>} /> 
           <Route path= "/add-student" element={<AddStudent/>} /> 
 
+          <Route path= "/manage-room" element={<ManageRoom/>} /> 
 
         </Routes>
       </div>
