@@ -15,6 +15,7 @@ function AuthPage() {
   // State for password visibility
   const [showPassword, setShowPassword] = useState(false);
 
+  
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,6 +1,53 @@
-import React from "react";
-
+import React, { useState } from "react";
+import StudentProfile from '../../pages/user/studentprofile';
+import RoomBooking from "../../pages/user/Room booking";
 const Dashboard = () => {
+  // State to track the active page
+  const [activePage, setActivePage] = useState("dashboard");
+
+  // Function to render page content based on active page
+  const renderPageContent = () => {
+    switch (activePage) {
+      case "students":
+        return <div><StudentProfile/></div>;
+      case "roomBooking":
+        return <div><RoomBooking/></div>;
+      case "feeManagement":
+        return <div>Fee Management Page Content</div>;
+      case "hostelRules":
+        return <div>Hostel Rules Page Content</div>;
+      case "attendance":
+        return <div>Attendance and Notification Page Content</div>;
+      case "dashboard":
+      default:
+        return (
+          <div>
+            {/* Dashboard Content */}
+            <h2 className="text-xl font-semibold text-gray-700">Dashboard</h2>
+            {/* Stats Cards, Recent Activities, etc. */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Total Students</h3>
+                <p className="text-2xl font-semibold text-blue-500">150</p>
+              </div>
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Rooms Occupied</h3>
+                <p className="text-2xl font-semibold text-blue-500">120</p>
+              </div>
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Pending Payments</h3>
+                <p className="text-2xl font-semibold text-blue-500">$3,200</p>
+              </div>
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Maintenance Requests</h3>
+                <p className="text-2xl font-semibold text-blue-500">8</p>
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -9,19 +56,58 @@ const Dashboard = () => {
         <nav>
           <ul>
             <li className="mb-4">
-              <a href="#dashboard" className="hover:text-blue-300">Dashboard</a>
+              <a
+                href="#dashboard"
+                onClick={() => setActivePage("dashboard")}
+                className="hover:text-blue-300"
+              >
+                Dashboard
+              </a>
             </li>
             <li className="mb-4">
-              <a href="#students" className="hover:text-blue-300">Students</a>
+              <a
+                href="#students"
+                onClick={() => setActivePage("students")}
+                className="hover:text-blue-300"
+              >
+                Students
+              </a>
             </li>
             <li className="mb-4">
-              <a href="#rooms" className="hover:text-blue-300">Rooms</a>
+              <a
+                href="#RoomBooking"
+                onClick={() => setActivePage("roomBooking")}
+                className="hover:text-blue-300"
+              >
+                Room Booking
+              </a>
             </li>
             <li className="mb-4">
-              <a href="#finances" className="hover:text-blue-300">Finances</a>
+              <a
+                href="#FeeManagement"
+                onClick={() => setActivePage("feeManagement")}
+                className="hover:text-blue-300"
+              >
+                Fee Management
+              </a>
             </li>
             <li className="mb-4">
-              <a href="#maintenance" className="hover:text-blue-300">Maintenance</a>
+              <a
+                href="#HostelRules"
+                onClick={() => setActivePage("hostelRules")}
+                className="hover:text-blue-300"
+              >
+                Hostel Rules
+              </a>
+            </li>
+            <li className="mb-4">
+              <a
+                href="#Attendance"
+                onClick={() => setActivePage("attendance")}
+                className="hover:text-blue-300"
+              >
+                Attendance and Notification
+              </a>
             </li>
           </ul>
         </nav>
@@ -42,66 +128,8 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h3 className="text-sm font-medium text-gray-600">Total Students</h3>
-            <p className="text-2xl font-semibold text-blue-500">150</p>
-          </div>
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h3 className="text-sm font-medium text-gray-600">Rooms Occupied</h3>
-            <p className="text-2xl font-semibold text-blue-500">120</p>
-          </div>
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h3 className="text-sm font-medium text-gray-600">Pending Payments</h3>
-            <p className="text-2xl font-semibold text-blue-500">$3,200</p>
-          </div>
-          <div className="p-4 bg-white rounded-lg shadow-md">
-            <h3 className="text-sm font-medium text-gray-600">Maintenance Requests</h3>
-            <p className="text-2xl font-semibold text-blue-500">8</p>
-          </div>
-        </div>
-
-        {/* Recent Activity & Requests */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Recent Activities */}
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Recent Activities</h2>
-            <ul className="space-y-3">
-              <li className="flex justify-between">
-                <span>John Doe checked in</span>
-                <span className="text-gray-500 text-sm">2 hrs ago</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Room 301 maintenance resolved</span>
-                <span className="text-gray-500 text-sm">1 day ago</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Jane Smith payment pending</span>
-                <span className="text-gray-500 text-sm">3 days ago</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Maintenance Requests */}
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">Maintenance Requests</h2>
-            <ul className="space-y-3">
-              <li className="flex justify-between">
-                <span>Room 102 - Broken AC</span>
-                <span className="text-gray-500 text-sm">Pending</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Room 305 - Leaky faucet</span>
-                <span className="text-gray-500 text-sm">In Progress</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Room 402 - Broken window</span>
-                <span className="text-gray-500 text-sm">Completed</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        {/* Page Content */}
+        {renderPageContent()}
       </div>
     </div>
   );
