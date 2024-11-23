@@ -4,6 +4,8 @@ import AddStudent from "../../components/adminComps/addStudent";
 
 import ManageRoom from '../../components/adminComps/manageRoom';
 
+import Booking from '../../components/adminComps/booking';
+
 const AdminDashboard = () => {
   // State to track the active sidebar item
   const [activeItem, setActiveItem] = useState("dashboard");
@@ -52,8 +54,7 @@ const AdminDashboard = () => {
       case "booking":
         return (
           <div>
-            <h1 className="text-3xl font-semibold text-gray-800 mb-6">Booking</h1>
-            <p>Manage and view current bookings.</p>
+            <Booking/>
           </div>
         );
       case "settings":
