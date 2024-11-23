@@ -97,7 +97,7 @@ const AdminDashboard = () => {
               <i className="fas fa-users mr-3"></i>Add Students
             </button>
           </li>
-          <li className="mb-6">
+          <li className="mb-6 ">
             <button
               onClick={() => setActiveItem("rooms")}
               className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
