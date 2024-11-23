@@ -1,31 +1,45 @@
 import React, { useState } from "react";
 import StudentProfile from "../../pages/user/studentprofile";
-import FeeManagement from "../../pages/user/FeeManagement";
-import HostelRules from "../../pages/user/HostelRules";
-import Complaints from "../../pages/user/Complaints";
+import FeeManagement from "../../pages/user/Fee management";
+import HostelRules from "../../pages/user/Hostel Rules";
+import Complaints from "../../pages/user/complaints"; // Updated import
 
 const Dashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
-
   const renderPageContent = () => {
     switch (activePage) {
       case "students":
-        return <StudentProfile />;
+        return <div><StudentProfile /></div>;
       case "feeManagement":
-        return <FeeManagement />;
+        return <div><FeeManagement /></div>;
       case "hostelRules":
-        return <HostelRules />;
+        return <div><HostelRules /></div>;
       case "attendance":
         return <div>Attendance and Notification Page Content</div>;
-      case "complaints":
-        return <Complaints />;
+      case "complaints": // Complaints component
+        return <div><Complaints /></div>;
       case "dashboard":
       default:
         return (
           <div>
             <h2 className="text-xl font-semibold text-gray-700">Dashboard</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              {/* Dashboard cards */}
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Total Students</h3>
+                <p className="text-2xl font-semibold text-blue-500">150</p>
+              </div>
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Rooms Occupied</h3>
+                <p className="text-2xl font-semibold text-blue-500">120</p>
+              </div>
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Pending Payments</h3>
+                <p className="text-2xl font-semibold text-blue-500">$3,200</p>
+              </div>
+              <div className="p-4 bg-white rounded-lg shadow-md">
+                <h3 className="text-sm font-medium text-gray-600">Maintenance Requests</h3>
+                <p className="text-2xl font-semibold text-blue-500">8</p>
+              </div>
             </div>
           </div>
         );
@@ -39,52 +53,58 @@ const Dashboard = () => {
         <nav>
           <ul>
             <li className="mb-4">
-              <button
+              <a
+                href="#dashboard"
                 onClick={() => setActivePage("dashboard")}
-                className="hover:text-blue-300 text-left"
+                className="hover:text-blue-300"
               >
                 Dashboard
-              </button>
+              </a>
             </li>
             <li className="mb-4">
-              <button
+              <a
+                href="#students"
                 onClick={() => setActivePage("students")}
-                className="hover:text-blue-300 text-left"
+                className="hover:text-blue-300"
               >
                 Students
-              </button>
+              </a>
             </li>
             <li className="mb-4">
-              <button
+              <a
+                href="#complaints"
                 onClick={() => setActivePage("complaints")}
-                className="hover:text-blue-300 text-left"
+                className="hover:text-blue-300"
               >
                 Complaints
-              </button>
+              </a>
             </li>
             <li className="mb-4">
-              <button
+              <a
+                href="#FeeManagement"
                 onClick={() => setActivePage("feeManagement")}
-                className="hover:text-blue-300 text-left"
+                className="hover:text-blue-300"
               >
                 Fee Management
-              </button>
+              </a>
             </li>
             <li className="mb-4">
-              <button
+              <a
+                href="#HostelRules"
                 onClick={() => setActivePage("hostelRules")}
-                className="hover:text-blue-300 text-left"
+                className="hover:text-blue-300"
               >
                 Hostel Rules
-              </button>
+              </a>
             </li>
             <li className="mb-4">
-              <button
+              <a
+                href="#Attendance"
                 onClick={() => setActivePage("attendance")}
-                className="hover:text-blue-300 text-left"
+                className="hover:text-blue-300"
               >
                 Attendance and Notification
-              </button>
+              </a>
             </li>
           </ul>
         </nav>
