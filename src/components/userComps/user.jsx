@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import StudentProfile from '../../pages/user/studentprofile';
 import RoomBooking from "../../pages/user/Room booking";
+import FeeManagement from "../../pages/user/Fee management";
 const Dashboard = () => {
   // State to track the active page
   const [activePage, setActivePage] = useState("dashboard");
@@ -13,7 +14,7 @@ const Dashboard = () => {
       case "roomBooking":
         return <div><RoomBooking/></div>;
       case "feeManagement":
-        return <div>Fee Management Page Content</div>;
+        return <div><FeeManagement/></div>;
       case "hostelRules":
         return <div>Hostel Rules Page Content</div>;
       case "attendance":

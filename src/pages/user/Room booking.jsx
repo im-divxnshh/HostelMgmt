@@ -151,12 +151,18 @@ const RoomBooking = () => {
                 required
               >
                 <option value="">Select Department</option>
-                <option value="BCA">Computer Science</option>
-                <option value="MCA">Computer Science</option>
-                <option value="Bsc biotechnology">Electrical Engineering</option>
-                <option value="MBA">Mechanical Engineering</option>
-                <option value="ZBC">Civil Engineering</option>
-                <option value="BBA">Mathematics</option>
+                <option value="BCA">BCA</option>
+                <option value="MCA">MCA</option>
+                <option value="Bsc biotech">Bsc biotech</option>
+                <option value="MBA">MBA</option>
+                <option value="ZBC">ZBC</option>
+                <option value="BBA">BBA</option>
+                <option value="Bcom">Bcom</option>
+                <option value="Bcom.hons">Bcom.hons</option>
+                <option value="B.ed">B.ed</option>
+                <option value="M.ed">M.ed</option>
+                <option value="MSC">MSC</option>
+            
               </select>
             </div>
             <div>
@@ -189,7 +195,7 @@ const RoomBooking = () => {
               <option value="">Select Room Type</option>
               <option value="Single">Single</option>
               <option value="Double">Double</option>
-              <option value="Suite">Suite</option>
+              <option value="Triple">Triple</option>
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
