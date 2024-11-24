@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import UserDashboard from './components/userComps/user';
 import UserPage from "./pages/user/userPage";
 import TestFile from './components/userComps/test';
-import AdminDashboard from './pages/admin/adminPage';
+import AdminDashboard from './pages/admin/adminDashboard';
 import AddStudent from './components/adminComps/addStudent';
 import ManageRoom from './components/adminComps/manageRoom';
 
