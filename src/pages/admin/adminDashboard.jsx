@@ -6,6 +6,10 @@ import ManageRoom from '../../components/adminComps/manageRoom';
 
 import Booking from '../../components/adminComps/booking';
 
+import HostelRules from "../../components/adminComps/hostelRules";
+
+import EmergencySafety from "../../components/adminComps/emergency";
+
 const AdminDashboard = () => {
   // State to track the active sidebar item
   const [activeItem, setActiveItem] = useState("dashboard");
@@ -57,12 +61,17 @@ const AdminDashboard = () => {
             <Booking/>
           </div>
         );
-      case "settings":
+      case "rules":
         return (
           <div>
-            <h1 className="text-3xl font-semibold text-gray-800 mb-6">Settings</h1>
-            <p>Update application settings and preferences.</p>
+            <HostelRules/>
           </div>
+        );
+      case "emergency":
+          return (
+            <div>
+              <EmergencySafety/>
+            </div>
         );
       default:
         return <p>Select a valid menu option.</p>;
@@ -119,14 +128,24 @@ const AdminDashboard = () => {
           </li>
           <li className="mb-6">
             <button
-              onClick={() => setActiveItem("settings")}
+              onClick={() => setActiveItem("rules")}
               className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
-                activeItem === "settings" ? "bg-indigo-700" : ""
+                activeItem === "rules" ? "bg-indigo-700" : ""
               }`}
             >
-              <i className="fas fa-cogs mr-3"></i> Settings
+              <i className="fas fa-cogs mr-3"></i> Hostel Rules
             </button>
           </li>
+          <li className="mb-6">
+           <button
+             onClick={() => setActiveItem("emergency")}
+             className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
+               activeItem === "emergency" ? "bg-indigo-700" : ""
+              }`}
+            >
+               <i className="fas fa-shield-alt mr-3"></i> Emergency & Safety
+             </button>
+          </li> 
         </ul>
       </div>
 
