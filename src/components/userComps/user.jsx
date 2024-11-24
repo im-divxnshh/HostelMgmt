@@ -4,6 +4,7 @@ import FeeManagement from "../../pages/user/Fee management";
 import HostelRules from "../../pages/user/Hostel Rules";
 import Complaints from "../../pages/user/complaints"; // Updated import
 import Attendance from "../../pages/user/Attendance";
+import Mess from "../../pages/user/Mess";
 
 const Dashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
@@ -13,10 +14,12 @@ const Dashboard = () => {
         return <div><StudentProfile /></div>;
       case "feeManagement":
         return <div><FeeManagement /></div>;
-      case "hostelRules":
+     case "hostelRules":
         return <div><HostelRules /></div>;
       case "attendance":
         return <div><Attendance/></div>;
+       case "Mess":
+          return <div><Mess/></div>;
       case "complaints": // Complaints component
         return <div><Complaints /></div>;
       case "dashboard":
