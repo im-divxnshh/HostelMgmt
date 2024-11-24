@@ -76,6 +76,15 @@ const Dashboard = () => {
             </li>
             <li className="mb-4">
               <a
+                
+                onClick={() => setActivePage("Mess")}
+                className="hover:text-blue-300"
+              >
+                Mess
+              </a>
+            </li>
+            <li className="mb-4">
+              <a
                 href="#complaints"
                 onClick={() => setActivePage("complaints")}
                 className="hover:text-blue-300"
