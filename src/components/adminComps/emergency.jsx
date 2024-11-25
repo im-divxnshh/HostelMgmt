@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const EmergencySafety = () => {
   const [contacts, setContacts] = useState([
     { name: "Fire Department", number: "101" },
-    { name: "Police Station", number: "100" },
+    { name: "Police Station", number: "112" },
     { name: "Ambulance", number: "102" },
   ]);
 
