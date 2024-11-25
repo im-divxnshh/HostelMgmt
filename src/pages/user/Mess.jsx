@@ -6,8 +6,8 @@ const MessMenu = () => {
   // Mess menu data
   const menu = {
     Monday: {
-      Breakfast: "Pancakes, Scrambled Eggs, Juice",
-      Lunch: "Rice, Dal, Mixed Vegetables, Salad",
+      Breakfast: "Tea , Aloo , Paratha",
+      Lunch: "Daal, Chapati , Vegetable , Rice ",
       Snacks: "Samosa, Tea",
       Dinner: "Butter Naan, Paneer Butter Masala, Gulab Jamun",
     },
