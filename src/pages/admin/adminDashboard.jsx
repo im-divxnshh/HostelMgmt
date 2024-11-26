@@ -1,20 +1,16 @@
 import React, { useState } from "react";
 
 import AddStudent from "../../components/adminComps/addStudent";
-
-import ManageRoom from '../../components/adminComps/manageRoom';
-
-import Booking from '../../components/adminComps/booking';
-
-import HostelRules from "../../components/adminComps/hostelRules";
-
+import ManageRoom from "../../components/adminComps/manageRoom";
+import Booking from "../../components/adminComps/booking";
 import EmergencySafety from "../../components/adminComps/emergency";
+import Rules from "../../components/adminComps/rules";
+import Fees from "../../components/adminComps/fees";
 
-const AdminDashboard = () => {
-  // State to track the active sidebar item
+
+function AdminDashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
 
-  // Function to render content based on the active sidebar item
   const renderContent = () => {
     switch (activeItem) {
       case "dashboard":
@@ -22,19 +18,16 @@ const AdminDashboard = () => {
           <div>
             <h1 className="text-3xl font-semibold text-gray-800 mb-6">Dashboard Overview</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Students Card */}
               <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Total Students</h2>
                 <p className="text-4xl font-bold text-indigo-600">120</p>
                 <p className="text-gray-500 mt-2">Currently living in the hostel.</p>
               </div>
-              {/* Rooms Card */}
               <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Total Rooms</h2>
                 <p className="text-4xl font-bold text-indigo-600">50</p>
                 <p className="text-gray-500 mt-2">Available rooms for booking.</p>
               </div>
-              {/* Bookings Card */}
               <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Bookings Today</h2>
                 <p className="text-4xl font-bold text-indigo-600">15</p>
@@ -44,35 +37,18 @@ const AdminDashboard = () => {
           </div>
         );
       case "students":
-        return (
-          <div>
-           <AddStudent/>
-          </div>
-        );
-      case "rooms":
-        return (
-          <div>
-            <ManageRoom/>
-          </div>
-        );
-      case "booking":
-        return (
-          <div>
-            <Booking/>
-          </div>
-        );
+        return <AddStudent />;
+        case "booking":
+          return <Booking />;
+        case "rooms":
+          return <ManageRoom />;
+      case"fees":
+        return <Fees />;
       case "rules":
-        return (
-          <div>
-            <HostelRules/>
-          </div>
-        );
+        return <Rules />; 
       case "emergency":
-          return (
-            <div>
-              <EmergencySafety/>
-            </div>
-        );
+        return <EmergencySafety />;
+      
       default:
         return <p>Select a valid menu option.</p>;
     }
@@ -80,7 +56,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
       <div className="w-64 bg-indigo-600 text-white p-4">
         <div className="flex justify-center items-center mb-8">
           <h2 className="text-3xl font-bold">Hostel Admin</h2>
@@ -106,7 +81,17 @@ const AdminDashboard = () => {
               <i className="fas fa-users mr-3"></i>Add Students
             </button>
           </li>
-          <li className="mb-6 ">
+          <li className="mb-6">
+            <button
+              onClick={() => setActiveItem("booking")}
+              className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
+                activeItem === "booking" ? "bg-indigo-700" : ""
+              }`}
+            >
+              <i className="fas fa-calendar-alt mr-3"></i> Booking and reservation
+            </button>
+          </li>
+          <li className="mb-6">
             <button
               onClick={() => setActiveItem("rooms")}
               className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
@@ -118,12 +103,12 @@ const AdminDashboard = () => {
           </li>
           <li className="mb-6">
             <button
-              onClick={() => setActiveItem("booking")}
+              onClick={() => setActiveItem("fees")}
               className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
-                activeItem === "booking" ? "bg-indigo-700" : ""
+                activeItem === "fees" ? "bg-indigo-700" : ""
               }`}
             >
-              <i className="fas fa-calendar-alt mr-3"></i> Booking
+              <i className="fas fa-calendar-alt mr-3"></i> Fees Management
             </button>
           </li>
           <li className="mb-6">
@@ -133,26 +118,24 @@ const AdminDashboard = () => {
                 activeItem === "rules" ? "bg-indigo-700" : ""
               }`}
             >
-              <i className="fas fa-cogs mr-3"></i> Hostel Rules
+              <i className="fas fa-calendar-alt mr-3"></i> Rules and Regulations
             </button>
           </li>
           <li className="mb-6">
-           <button
-             onClick={() => setActiveItem("emergency")}
-             className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
-               activeItem === "emergency" ? "bg-indigo-700" : ""
+            <button
+              onClick={() => setActiveItem("emergency")}
+              className={`flex items-center text-lg hover:bg-indigo-700 p-2 rounded ${
+                activeItem === "emergency" ? "bg-indigo-700" : ""
               }`}
             >
-               <i className="fas fa-shield-alt mr-3"></i> Emergency & Safety
-             </button>
-          </li> 
+              <i className="fas fa-shield-alt mr-3"></i> Emergency & Safety
+            </button>
+          </li>
         </ul>
       </div>
-
-      {/* Main Content Area */}
       <div className="flex-1 p-6">{renderContent()}</div>
     </div>
   );
-};
+}
 
 export default AdminDashboard;

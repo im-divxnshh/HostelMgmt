@@ -6,6 +6,8 @@ import TestFile from './components/userComps/test';
 import AdminDashboard from './pages/admin/adminDashboard';
 import AddStudent from './components/adminComps/addStudent';
 import ManageRoom from './components/adminComps/manageRoom';
+import Fees from './components/adminComps/fees';
+import FeesManagement from './components/adminComps/fees';
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
           <Route path= "/add-student" element={<AddStudent/>} /> 
 
           <Route path= "/manage-room" element={<ManageRoom/>} /> 
+          <Route path="/fees" element= {<FeesManagement/>}/>         
 
         </Routes>
       </div>
