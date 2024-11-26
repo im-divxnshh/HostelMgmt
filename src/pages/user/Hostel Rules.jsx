@@ -1,34 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { firestore } from "../../utils/firebaseConfig"; // Adjust path as needed
+import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const HostelRules = () => {
-  // State to manage the list of rules
-  const [rules, setRules] = useState([
-    "Lights out by 10:30 PM.",
-    "Visitors are allowed only during designated visiting hours.",
-    "Maintain cleanliness in the rooms and common areas.",
-    "Strictly no smoking or alcohol consumption on hostel premises.",
-    "Always carry your hostel ID card.",
-  ]);
+  const [rules, setRules] = useState([]);
+  const [newRule, setNewRule] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [newRule, setNewRule] = useState('');
+  // Fetch existing rules from Firestore
+  const fetchRules = async () => {
+    try {
+      setLoading(true);
+      const rulesCollection = collection(firestore, "hostelRules");
+      const querySnapshot = await getDocs(rulesCollection);
+      const fetchedRules = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        rule: doc.data().rule,
+      }));
+      setRules(fetchedRules);
+    } catch (error) {
+      console.error("Error fetching rules:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Function to handle adding a new rule
-  const addRule = () => {
-    if (newRule.trim() === '') {
-      alert('Rule cannot be empty!');
+  // Add a new rule to Firestore
+  const addRule = async () => {
+    if (newRule.trim() === "") {
+      alert("Rule cannot be empty!");
       return;
     }
-    setRules([...rules, newRule]);
-    setNewRule('');
-  };
-
-  // Function to handle deleting a rule
-  const deleteRule = (index) => {
-    if (window.confirm('Are you sure you want to delete this rule?')) {
-      const updatedRules = rules.filter((_, i) => i !== index);
-      setRules(updatedRules);
+    try {
+      const rulesCollection = collection(firestore, "hostelRules");
+      const docRef = await addDoc(rulesCollection, { rule: newRule });
+      setRules([...rules, { id: docRef.id, rule: newRule }]); // Update local state
+      setNewRule("");
+      alert("Rule added successfully!");
+    } catch (error) {
+      console.error("Error adding rule:", error);
     }
   };
+
+  // Delete a rule from Firestore
+  const deleteRule = async (id) => {
+    if (window.confirm("Are you sure you want to delete this rule?")) {
+      try {
+        const docRef = doc(firestore, "hostelRules", id);
+        await deleteDoc(docRef);
+        setRules(rules.filter((rule) => rule.id !== id)); // Update local state
+        alert("Rule deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting rule:", error);
+      }
+    }
+  };
+
+  // Load rules when the component mounts
+  React.useEffect(() => {
+    fetchRules();
+  }, []);
 
   return (
     <div className="p-8 max-w-3xl mx-auto bg-gray-100 rounded-lg shadow-lg">
@@ -37,15 +68,17 @@ const HostelRules = () => {
       {/* Display Rules */}
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Current Rules</h2>
-        {rules.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-500">Loading rules...</p>
+        ) : rules.length === 0 ? (
           <p className="text-gray-500">No rules found. Add some!</p>
         ) : (
           <ul className="list-disc pl-6">
-            {rules.map((rule, index) => (
-              <li key={index} className="mb-2 flex justify-between items-center">
-                <span className="text-gray-700">{rule}</span>
+            {rules.map((rule) => (
+              <li key={rule.id} className="mb-2 flex justify-between items-center">
+                <span className="text-gray-700">{rule.rule}</span>
                 <button
-                  onClick={() => deleteRule(index)}
+                  onClick={() => deleteRule(rule.id)}
                   className="text-red-500 hover:text-red-700 transition"
                 >
                   Delete
