@@ -7,45 +7,45 @@ const MessMenu = () => {
   const menu = {
     Monday: {
       Breakfast: "Tea , Aloo , Puri",
-      Lunch: "Arhar Daal, Chapati , Vegetable , Rice ",
-      Snacks: "Samosa, Tea",
-      Dinner: "Aloo tamatar,Raita,Roti,Rice",
+      Lunch: "Arhar Daal , Chapati , Vegetable , Rice ",
+      Snacks: "Samosa , Tea",
+      Dinner: "Aloo tamatar , Raita , Roti , Rice",
     },
     Tuesday: {
       Breakfast: "Sandwich , Tea",
-      Lunch: "Rajma,Roti,Rice,vegetable",
+      Lunch: "Rajma , Roti , Rice , vegetable",
       Snacks: "Parmal chane , Tea",
-      Dinner: "Malka daal,vegetable,Roti,Rice",
+      Dinner: "Malka daal , vegetable , Roti , Rice",
     },
     Wednesday: {
-      Breakfast: "Methi Paratha,Achaar,Tea",
-      Lunch: "Mix daal,vegetable,Rice, Roti",
-      Snacks: "Chawmeine, Tea",
-      Dinner: "Chane,vegetable,Roti,Rice",
+      Breakfast: "Methi Paratha , Achaar , Tea",
+      Lunch: "Mix daal , vegetable , Rice , Roti",
+      Snacks: "Chawmeine , Tea",
+      Dinner: "Chane , vegetable , Roti , Rice",
     },
     Thursday: {
-      Breakfast: "Ajwain Puri,Achaar,Tea",
-      Lunch: "Curry,Methi aloo,Rice,Roti",
-      Snacks: "Tikki or Burger,Tea",
-      Dinner: "Urad+Chana daal,vegetable,Roti,Rice",
+      Breakfast: "Ajwain Puri , Achaar , Tea",
+      Lunch: "Curry , Methi aloo , Rice , Roti",
+      Snacks: "Tikki or Burger , Tea",
+      Dinner: "Urad+Chana daal , vegetable , Roti , Rice",
     },
     Friday: {
-      Breakfast: "Paratha,Aloo,Tea",
-      Lunch: "Arhar daal,vegetable,Roti,Rice",
-      Snacks: "Microni,Tea",
-      Dinner: "Chana daal,Roti,vegetable,Rice",
+      Breakfast: "Paratha , Aloo , Tea",
+      Lunch: "Arhar daal , vegetable , Roti , Rice",
+      Snacks: "Microni , Tea",
+      Dinner: "Chana daal , Roti , vegetable , Rice",
     },
     Saturday: {
-      Breakfast: "Jam Bread,Tea",
-      Lunch: "Urad Rajma,vegetable,Roti,Rice",
-      Snacks: "Jave or cutlets, Tea",
-      Dinner: "Tamatar Aloo or Soyabean,Roti,Rice,Gulab Jamun",
+      Breakfast: "Jam Bread , Tea",
+      Lunch: "Urad Rajma , vegetable , Roti , Rice",
+      Snacks: "Jave or cutlets , Tea",
+      Dinner: "Tamatar Aloo or Soyabean , Roti , Rice , Gulab Jamun",
     },
     Sunday: {
-      Breakfast: "Chhole Bhature,Tea",
-      Lunch: "Tehri,Chutney",
-      Snacks: "Poha, Tea",
-      Dinner: "Paneer/Rajma/Copte,Roti,Rice",
+      Breakfast: "Chhole Bhature , Tea",
+      Lunch: "Tehri , Chutney",
+      Snacks: "Poha , Tea",
+      Dinner: "Paneer/Rajma/Copte , Roti , Rice",
     },
   };
 
@@ -62,7 +62,9 @@ const MessMenu = () => {
 
   return (
     <div className="p-8 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 min-h-screen text-white">
-      <h1 className="text-4xl font-bold text-center mb-8">Mess Menu</h1>
+      <h1 className="text-5xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
+        MESS MENU
+      </h1>
 
       {/* Day Selector */}
       <div className="flex justify-center mb-8 space-x-4">
