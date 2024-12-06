@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { FaUsers, FaMoneyBillWave, FaClipboardList, FaBell, FaBook, FaUtensils, FaRegCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import StudentProfile from "../../pages/user/studentprofile";
-import FeeManagement from "../../pages/user/Fee management";
-import HostelRules from "../../pages/user/Hostel Rules";
-import Complaints from "../../pages/user/complaints";
-import Attendance from "../../pages/user/Attendance";
-import Mess from "../../pages/user/Mess";
+import StudentProfile from "../../components/userComps/studentProfile";
+import FeeManagement from  "../../components/userComps/feesManagement";
+import HostelRules from    "../../components/userComps/hostelRules";
+import Complaints from     "../../components/userComps/complaints";
+import Attendance from     "../../components/userComps/attendance";
+import Mess from           "../../components/userComps/mess";
 
-const Dashboard = () => {
+const UserDashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
 
   const renderPageContent = () => {
@@ -164,4 +164,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UserDashboard;
