@@ -18,7 +18,7 @@ const AddStudent = () => {
   const [loading, setLoading] = useState(false);
 
   const usersCollectionRef = collection(firestore, 'users');
-  const departments = ['BCA', 'BBA', 'BSC BIOTECH'];
+  const departments = ['BCA','BBA','BSC Biotech','BSC Microbiology','MCA','MBA','B.ED','M.ED','B.COM','B.COM HONORS'];
 
   const fetchStudents = async () => {
     const data = await getDocs(usersCollectionRef);

@@ -198,6 +198,16 @@ const RoomBooking = () => {
                   required
                 >
                   <option value="">Select Department</option>
+                  <option value="">BBA</option>
+                  <option value="">BCA</option>
+                  <option value="">BSC Biotech</option>
+                  <option value="">BSC Microbiology</option>
+                  <option value="">MBA </option>
+                  <option value="">MCA</option>
+                  <option value="">B.ED</option>
+                  <option value="">M.ED</option>
+                  <option value="">B.COM </option> 
+                  <option value="">B.COM HONORS</option>
                 </select>
               </div>
               <div>
