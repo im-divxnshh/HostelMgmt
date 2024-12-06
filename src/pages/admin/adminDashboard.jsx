@@ -118,7 +118,7 @@ function AdminDashboard() {
                 activeItem === "rules" ? "bg-indigo-700" : ""
               }`}
             >
-              <i className="fas fa-calendar-alt mr-3"></i> Rules and Regulations
+              <i className="fas fa-calendar-alt mr-3"></i> Rules  
             </button>
           </li>
           <li className="mb-6">

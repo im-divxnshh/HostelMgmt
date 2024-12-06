@@ -8,7 +8,7 @@ import AddStudent from './components/adminComps/addStudent';
 import ManageRoom from './components/adminComps/manageRoom';
 import Fees from './components/adminComps/fees';
 import FeesManagement from './components/adminComps/fees';
-
+import AdminLogin from './pages/admin/adminLogin';
 function App() {
   return (
     <Router> {/* Wrap your app in BrowserRouter */}
@@ -22,7 +22,9 @@ function App() {
           <Route path= "/add-student" element={<AddStudent/>} /> 
 
           <Route path= "/manage-room" element={<ManageRoom/>} /> 
-          <Route path="/fees" element= {<FeesManagement/>}/>         
+          <Route path="/fees" element= {<FeesManagement/>}/>
+          <Route path="/admin-login" element= {<AdminLogin/>}/>
+   
 
         </Routes>
       </div>
