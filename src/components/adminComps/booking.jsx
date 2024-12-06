@@ -198,16 +198,16 @@ const RoomBooking = () => {
                   required
                 >
                   <option value="">Select Department</option>
-                  <option value="">BBA</option>
-                  <option value="">BCA</option>
-                  <option value="">BSC Biotech</option>
-                  <option value="">BSC Microbiology</option>
-                  <option value="">MBA </option>
-                  <option value="">MCA</option>
-                  <option value="">B.ED</option>
-                  <option value="">M.ED</option>
-                  <option value="">B.COM </option> 
-                  <option value="">B.COM HONORS</option>
+                  <option value="BBA">BBA</option>
+                  <option value="BCA">BCA</option>
+                  <option value="BSC Biotech">BSC Biotech</option>
+                  <option value="BSC Microbiology">BSC Microbiology</option>
+                  <option value="MBA">MBA </option>
+                  <option value="MCA">MCA</option>
+                  <option value="B.ED">B.ED</option>
+                  <option value="M.ED">M.ED</option>
+                  <option value="B.COM">B.COM </option> 
+                  <option value="B.COM HONORS">B.COM HONORS</option>
                 </select>
               </div>
               <div>
@@ -258,20 +258,7 @@ const RoomBooking = () => {
                   required
                 />
               </div>
-              <div>
-                <label htmlFor="checkOutDate" className="block text-sm font-medium">
-                  Check-out Date
-                </label>
-                <input
-                  type="date"
-                  id="checkOutDate"
-                  name="checkOutDate"
-                  value={formData.checkOutDate}
-                  onChange={handleChange}
-                  className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-                  required
-                />
-              </div>
+              
             </div>
           </section>
 
