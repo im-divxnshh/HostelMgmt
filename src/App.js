@@ -17,7 +17,6 @@ function App() {
         <Routes>
           <Route path="/" element={<AdminLogin/>} /> {/* Route for UserPage at root */}
           <Route path="/dashboard" element={<UserDashboard />} /> {/* Route for UserDashboard */}
-          <Route path= "/test" element={<TestFile/>} /> 
           <Route path= "/admin-dashboard" element={<AdminDashboard/>} /> 
           <Route path= "/add-student" element={<AddStudent/>} /> 
 
