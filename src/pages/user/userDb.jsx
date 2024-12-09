@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { FaUsers, FaMoneyBillWave, FaClipboardList, FaBell, FaBook, FaUtensils, FaRegCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import StudentProfile from "../../components/userComps/studentProfile";
-import FeeManagement from  "../../components/userComps/feesManagement";
-import HostelRules from    "../../components/userComps/hostelRules";
-import Complaints from     "../../components/userComps/complaints";
-import Attendance from     "../../components/userComps/attendance";
-import Mess from           "../../components/userComps/mess";
+import StudentProfile from "../../components/userComps/Profile";
+import FeeManagement from "../../components/userComps/feesManagement";
+import HostelRules from "../../components/userComps/hostelRules";
+import Complaints from "../../components/userComps/complaints";
+import Attendance from "../../components/userComps/attendance";
+import Mess from "../../components/userComps/mess";
 
 const UserDashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
@@ -149,11 +149,6 @@ const UserDashboard = () => {
             <button className="bg-gray-200 p-2 rounded-full hover:bg-gray-300">
               <FaBell />
             </button>
-            <img
-              className="w-10 h-10 rounded-full border-2 border-blue-500"
-              src="https://via.placeholder.com/150"
-              alt="Profile"
-            />
           </div>
         </header>
 
