@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// Style added directly inside the component
 const StudentProfile = () => {
   // Example student data
   const studentData = {
@@ -20,7 +19,7 @@ const StudentProfile = () => {
     switch (section) {
       case 'general':
         return (
-          <div className="section-content">
+          <div className="profile-section-content">
             <h2>General Information</h2>
             <p><strong>Name:</strong> {studentData.name}</p>
             <p><strong>Student ID:</strong> {studentData.studentId}</p>
@@ -29,7 +28,7 @@ const StudentProfile = () => {
         );
       case 'academic':
         return (
-          <div className="section-content">
+          <div className="profile-section-content">
             <h2>Academic Details</h2>
             <p><strong>Department:</strong> {studentData.Department}</p>
             <p><strong>Year:</strong> {studentData.year}</p>
@@ -37,25 +36,25 @@ const StudentProfile = () => {
           </div>
         );
       default:
-        return <div className="section-content">Please select a section to view.</div>;
+        return <div className="profile-section-content">Please select a section to view.</div>;
     }
   };
 
   return (
-    <div className="profile-container">
+    <div className="student-profile-container">
       <h1>Student Profile</h1>
       
       {/* Navigation */}
-      <div className="button-container">
+      <div className="profile-button-container">
         <button 
           onClick={() => setSelectedSection('general')}
-          className={selectedSection === 'general' ? 'active' : ''}
+          className={selectedSection === 'general' ? 'profile-active' : ''}
         >
           General Information
         </button>
         <button 
           onClick={() => setSelectedSection('academic')}
-          className={selectedSection === 'academic' ? 'active' : ''}
+          className={selectedSection === 'academic' ? 'profile-active' : ''}
         >
           Academic Details
         </button>
@@ -64,77 +63,80 @@ const StudentProfile = () => {
       {/* Render selected section */}
       {renderSection(selectedSection)}
 
-      {/* Inline Styles */}
+      {/* Scoped CSS */}
       <style>
         {`
-          .profile-container {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+          .student-profile-container {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
             padding: 20px;
             max-width: 800px;
             margin: 0 auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-          }
-
-          h1 {
-            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             color: #333;
-            font-size: 2.5em;
-            margin-bottom: 20px;
           }
 
-          .button-container {
+          .student-profile-container h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+          }
+
+          .profile-button-container {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 20px;
           }
 
-          button {
-            background-color: #4CAF50;
+          .profile-button-container button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 1.1em;
-            transition: background-color 0.3s ease;
-            width: 180px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
           }
 
-          button:hover {
-            background-color: #45a049;
+          .profile-button-container button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
           }
 
-          button.active {
-            background-color: #333;
+          .profile-button-container button.profile-active {
+            background: linear-gradient(135deg, #FF6A88, #FF99AC);
             color: white;
           }
 
-          .section-content {
+          .profile-section-content {
+            background: #ffffff;
+            border-radius: 10px;
             padding: 20px;
-            background-color: #f4f4f4;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
           }
 
-          section h2 {
+          .profile-section-content h2 {
             font-size: 1.8em;
             color: #333;
             margin-bottom: 10px;
           }
 
-          section p {
+          .profile-section-content p {
             font-size: 1.1em;
             color: #555;
             margin: 5px 0;
           }
 
-          strong {
+          .profile-section-content strong {
             font-weight: bold;
+            color: #333;
           }
         `}
       </style>

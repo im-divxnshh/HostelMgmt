@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import required components
-import UserDashboard from './components/userComps/user';
+import UserDashboard from './pages/user/userDb';
 import UserPage from "./pages/user/userPage";
 import TestFile from './components/userComps/test';
 import AdminDashboard from './pages/admin/adminDashboard';
