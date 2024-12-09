@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState(''); // Store email input
   const [password, setPassword] = useState(''); // Store password input
-  const [error, setError] = useState(null); // Display login errors
   const [loading, setLoading] = useState(false); // Display loading state
   const navigate = useNavigate(); // Handle navigation after login
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Start loading state
-    setError(null); // Clear any previous errors
 
     const auth = getAuth(); // Initialize Firebase Auth instance
 
@@ -23,11 +23,33 @@ const AdminLogin = () => {
 
       console.log('Login successful:', user);
 
+      // Show success toast
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Login successful!',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
       // Navigate to the admin dashboard upon successful login
       navigate('/admin-dashboard');
     } catch (err) {
       console.error('Login error:', err);
-      setError('Authentication failed. Please check your email and password.');
+
+      // Show error toast
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'error',
+        title: 'Authentication failed!',
+        text: 'Please check your email and password.',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
     } finally {
       setLoading(false); // End loading state
     }
@@ -37,9 +59,6 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
-
-        {/* Show error messages */}
-        {error && <div className="bg-red-500 text-white p-2 rounded-md mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
