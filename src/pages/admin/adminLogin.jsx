@@ -1,33 +1,35 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';  // Use useNavigate for routing
+import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);  // To show error messages
-  const [loading, setLoading] = useState(false);  // To indicate loading state
-  const navigate = useNavigate();  // For navigation
+  const [email, setEmail] = useState(''); // Store email input
+  const [password, setPassword] = useState(''); // Store password input
+  const [error, setError] = useState(null); // Display login errors
+  const [loading, setLoading] = useState(false); // Display loading state
+  const navigate = useNavigate(); // Handle navigation after login
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    const auth = getAuth();
-    
+    setLoading(true); // Start loading state
+    setError(null); // Clear any previous errors
+
+    const auth = getAuth(); // Initialize Firebase Auth instance
+
     try {
-      // Sign in with email and password
+      // Authenticate the user
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
       const user = userCredential.user;
-      
-      // Check if the user exists and if email is in our system (you can add more logic here if needed)
-      // If valid, navigate to the dashboard (or admin page)
-      navigate('/admin-dashboard');  // Redirect to admin dashboard or any protected page after login
-      
-      setLoading(false);  // End loading state
+
+      console.log('Login successful:', user);
+
+      // Navigate to the admin dashboard upon successful login
+      navigate('/admin-dashboard');
     } catch (err) {
-      setLoading(false);  // End loading state
-      setError('Authentication failed. Please try again.');
+      console.error('Login error:', err);
+      setError('Authentication failed. Please check your email and password.');
+    } finally {
+      setLoading(false); // End loading state
     }
   };
 
@@ -36,11 +38,11 @@ const AdminLogin = () => {
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
 
-        {error && (
-          <div className="bg-red-500 text-white p-2 rounded-md mb-4">{error}</div>
-        )}
+        {/* Show error messages */}
+        {error && <div className="bg-red-500 text-white p-2 rounded-md mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit}>
+          {/* Email Input */}
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700">Email</label>
             <input
@@ -53,6 +55,7 @@ const AdminLogin = () => {
             />
           </div>
 
+          {/* Password Input */}
           <div className="mb-4">
             <label htmlFor="password" className="block text-gray-700">Password</label>
             <input
@@ -65,9 +68,12 @@ const AdminLogin = () => {
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 w-full"
+            className={`bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 w-full ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}

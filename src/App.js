@@ -15,7 +15,7 @@ function App() {
       <div className="App">
         {/* Set up routes using Routes */}
         <Routes>
-          <Route path="/" element={<UserPage />} /> {/* Route for UserPage at root */}
+          <Route path="/" element={<AdminLogin/>} /> {/* Route for UserPage at root */}
           <Route path="/dashboard" element={<UserDashboard />} /> {/* Route for UserDashboard */}
           <Route path= "/test" element={<TestFile/>} /> 
           <Route path= "/admin-dashboard" element={<AdminDashboard/>} /> 
@@ -23,7 +23,7 @@ function App() {
 
           <Route path= "/manage-room" element={<ManageRoom/>} /> 
           <Route path="/fees" element= {<FeesManagement/>}/>
-          <Route path="/admin-login" element= {<AdminLogin/>}/>
+          
    
 
         </Routes>
