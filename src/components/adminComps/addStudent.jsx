@@ -11,6 +11,10 @@ const AddStudent = () => {
     email: '',
     age: '',
     dept: '',
+    mobile: '',
+    parentDetails: '',
+    dob: '',
+    fees: '',
     role: 'student',
     password: '12345678',
   });
@@ -18,7 +22,7 @@ const AddStudent = () => {
   const [loading, setLoading] = useState(false);
 
   const usersCollectionRef = collection(firestore, 'users');
-  const departments = ['BCA','BBA','BSC Biotech','BSC Microbiology','MCA','MBA','B.ED','M.ED','B.COM','B.COM HONORS'];
+  const departments = ['BCA', 'BBA', 'BSC Biotech', 'BSC Microbiology', 'MCA', 'MBA', 'B.ED', 'M.ED', 'B.COM', 'B.COM HONORS'];
 
   const fetchStudents = async () => {
     const data = await getDocs(usersCollectionRef);
@@ -50,14 +54,22 @@ const AddStudent = () => {
 
       const studentRef = doc(firestore, 'users', userId);
       await setDoc(studentRef, {
-        name: student.name,
-        email: student.email,
-        age: student.age,
-        dept: student.dept,
+        ...student,
         role: 'student',
       });
 
-      setStudent({ name: '', email: '', age: '', dept: '', role: 'student', password: '12345678' });
+      setStudent({
+        name: '',
+        email: '',
+        age: '',
+        dept: '',
+        mobile: '',
+        parentDetails: '',
+        dob: '',
+        fees: '',
+        role: 'student',
+        password: '12345678',
+      });
       fetchStudents();
 
       Swal.fire({
@@ -111,46 +123,28 @@ const AddStudent = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-row bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md mr-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add New Student</h2>
+    <div className="min-h-screen flex flex-col items-center bg-gray-100 p-6">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl mb-6">
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Add New Student</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700">Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={student.name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={student.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="age" className="block text-gray-700">Age</label>
-            <input
-              type="number"
-              id="age"
-              name="age"
-              value={student.age}
-              onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
+          {/* Form Fields */}
+          {['name', 'email', 'age', 'mobile', 'parentDetails', 'fees'].map((field) => (
+            <div className="mb-4" key={field}>
+              <label htmlFor={field} className="block text-gray-700 capitalize">
+                {field.replace(/([A-Z])/g, ' $1')}
+              </label>
+              <input
+                type={field === 'email' ? 'email' : field === 'fees' || field === 'age' ? 'number' : 'text'}
+                id={field}
+                name={field}
+                value={student[field]}
+                onChange={handleChange}
+                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+              />
+            </div>
+          ))}
+
           <div className="mb-4">
             <label htmlFor="dept" className="block text-gray-700">Department</label>
             <select
@@ -167,6 +161,19 @@ const AddStudent = () => {
               ))}
             </select>
           </div>
+          <div className="mb-4">
+            <label htmlFor="dob" className="block text-gray-700">Date of Birth</label>
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              value={student.dob}
+              onChange={handleChange}
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
+
           <button
             type="submit"
             className={`bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 w-full flex items-center justify-center ${
@@ -182,39 +189,47 @@ const AddStudent = () => {
           </button>
         </form>
       </div>
+
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <h2 className="text-2xl font-bold mb-6 text-center">Students List</h2>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">Age</th>
-              <th className="border px-4 py-2">Dept</th>
-              <th className="border px-4 py-2">Role</th>
-              <th className="border px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map((s) => (
-              <tr key={s.id}>
-                <td className="border px-4 py-2">{s.name}</td>
-                <td className="border px-4 py-2">{s.email}</td>
-                <td className="border px-4 py-2">{s.age}</td>
-                <td className="border px-4 py-2">{s.dept}</td>
-                <td className="border px-4 py-2">{s.role}</td>
-                <td className="border px-4 py-2">
-                  <button
-                    onClick={() => handleDelete(s.id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Students List</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse border border-gray-200">
+            <thead>
+              <tr className="bg-blue-50 text-blue-600">
+                {['Name', 'Email', 'Age', 'Dept', 'Mobile', 'Parent Details', 'DOB', 'Fees', 'Role', 'Actions'].map(
+                  (header) => (
+                    <th key={header} className="border px-4 py-2 text-left">
+                      {header}
+                    </th>
+                  )
+                )}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {students.map((s) => (
+                <tr key={s.id} className="hover:bg-gray-100">
+                  <td className="border px-4 py-2">{s.name}</td>
+                  <td className="border px-4 py-2">{s.email}</td>
+                  <td className="border px-4 py-2">{s.age}</td>
+                  <td className="border px-4 py-2">{s.dept}</td>
+                  <td className="border px-4 py-2">{s.mobile}</td>
+                  <td className="border px-4 py-2">{s.parentDetails}</td>
+                  <td className="border px-4 py-2">{s.dob}</td>
+                  <td className="border px-4 py-2">{s.fees}</td>
+                  <td className="border px-4 py-2">{s.role}</td>
+                  <td className="border px-4 py-2">
+                    <button
+                      onClick={() => handleDelete(s.id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
