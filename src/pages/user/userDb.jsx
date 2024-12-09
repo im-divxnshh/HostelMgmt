@@ -19,7 +19,7 @@ const UserDashboard = () => {
       case "hostelRules":
         return <div><HostelRules /></div>;
       case "attendance":
-        return <div><Attendance /></div>;
+        return <div><Attendance / ></div>;
       case "mess":
         return <div><Mess /></div>;
       case "complaints":
