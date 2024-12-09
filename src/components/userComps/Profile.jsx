@@ -9,6 +9,11 @@ const StudentProfile = () => {
     age: 20,
     Department: 'Computer Science',
     year: 'Sophomore',
+    roomDetails: {
+      roomNumber: 'A-101',
+      hostelName: 'Maple Residence',
+      bedNumber: 'B-12',
+    },
   };
 
   // State to manage which section to display
@@ -35,6 +40,15 @@ const StudentProfile = () => {
             <p><strong>Age:</strong> {studentData.age}</p>
           </div>
         );
+      case 'room':
+        return (
+          <div className="profile-section-content">
+            <h2>Room Details</h2>
+            <p><strong>Room Number:</strong> {studentData.roomDetails.roomNumber}</p>
+            <p><strong>Hostel Name:</strong> {studentData.roomDetails.hostelName}</p>
+            <p><strong>Bed Number:</strong> {studentData.roomDetails.bedNumber}</p>
+          </div>
+        );
       default:
         return <div className="profile-section-content">Please select a section to view.</div>;
     }
@@ -57,6 +71,12 @@ const StudentProfile = () => {
           className={selectedSection === 'academic' ? 'profile-active' : ''}
         >
           Academic Details
+        </button>
+        <button 
+          onClick={() => setSelectedSection('room')}
+          className={selectedSection === 'room' ? 'profile-active' : ''}
+        >
+          Room Details
         </button>
       </div>
       
