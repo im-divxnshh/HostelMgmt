@@ -13,7 +13,7 @@ function App() {
       <div className="App">
         {/* Set up routes using Routes */}
         <Routes>
-          <Route path="/admin-login" element={<AdminLogin/>} /> {/* Route for UserPage at root */}
+          <Route path="/" element={<AdminLogin/>} /> {/* Route for UserPage at root */}
           <Route path="/user-login" element={<UserLogin/>} />
           <Route path="/user-dashboard" element={<UserDashboard />} /> {/* Route for UserDashboard */}
           <Route path= "/admin-dashboard" element={<AdminDashboard/>} />

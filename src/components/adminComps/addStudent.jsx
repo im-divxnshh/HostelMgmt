@@ -21,6 +21,8 @@ const AddStudent = () => {
   });
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
 
   const usersCollectionRef = collection(firestore, 'users');
   const departments = ['BCA', 'BBA', 'BSC Biotech', 'BSC Microbiology', 'MCA', 'MBA', 'B.ED', 'M.ED', 'B.COM', 'B.COM HONORS'];
@@ -46,18 +48,46 @@ const AddStudent = () => {
     e.preventDefault();
     setLoading(true);
 
-    const auth = getAuth();
-    const { email, password } = student;
-
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const userId = userCredential.user.uid;
+      if (isEditing && editId) {
+        const studentRef = doc(firestore, 'users', editId);
+        await setDoc(studentRef, {
+          ...student,
+          role: 'student',
+        });
 
-      const studentRef = doc(firestore, 'users', userId);
-      await setDoc(studentRef, {
-        ...student,
-        role: 'student',
-      });
+        setIsEditing(false);
+        setEditId(null);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Student updated successfully!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } else {
+        const auth = getAuth();
+        const { email, password } = student;
+
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userId = userCredential.user.uid;
+
+        const studentRef = doc(firestore, 'users', userId);
+        await setDoc(studentRef, {
+          ...student,
+          role: 'student',
+        });
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Student added successfully!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
 
       setStudent({
         name: '',
@@ -72,22 +102,14 @@ const AddStudent = () => {
         role: 'student',
         password: '12345678',
       });
-      fetchStudents();
 
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: 'Student added successfully!',
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      fetchStudents();
     } catch (error) {
       Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'error',
-        title: 'Failed to add student!',
+        title: 'Failed to save student!',
         text: error.message,
         showConfirmButton: false,
         timer: 2000,
@@ -124,12 +146,23 @@ const AddStudent = () => {
     }
   };
 
+  const handleEdit = (id) => {
+    const selectedStudent = students.find((s) => s.id === id);
+    if (selectedStudent) {
+      setStudent({ ...selectedStudent });
+      setIsEditing(true);
+      setEditId(id);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Form Section */}
         <div className="bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-bold mb-6 text-blue-600 text-center">Add New Student</h2>
+          <h2 className="text-3xl font-bold mb-6 text-blue-600 text-center">
+            {isEditing ? 'Edit Student' : 'Add New Student'}
+          </h2>
           <form onSubmit={handleSubmit}>
             {['name', 'email', 'age', 'mobile', 'fees'].map((field) => (
               <div className="mb-4" key={field}>
@@ -211,7 +244,7 @@ const AddStudent = () => {
               {loading ? (
                 <span className="spinner-border animate-spin w-5 h-5 border-4 border-t-4 border-white rounded-full"></span>
               ) : (
-                'Add Student'
+                isEditing ? 'Update Student' : 'Add Student'
               )}
             </button>
           </form>
@@ -247,6 +280,12 @@ const AddStudent = () => {
                     <td className="border px-4 py-2">{s.fees}</td>
                     <td className="border px-4 py-2">{s.role}</td>
                     <td className="border px-4 py-2">
+                      <button
+                        onClick={() => handleEdit(s.id)}
+                        className="text-blue-500 hover:underline mr-4"
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={() => handleDelete(s.id)}
                         className="text-red-500 hover:underline"
