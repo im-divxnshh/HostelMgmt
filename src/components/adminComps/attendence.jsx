@@ -13,7 +13,7 @@ const AttendancePage = () => {
     const fetchAttendance = async () => {
       try {
         const querySnapshot = await getDocs(collection(firestore, "users"));
-        const records = querySnapshot.docs.map((doc) => ({
+        const records = querySnapshot.docs.map((doc ) => ({
           id: doc.id,
           ...doc.data(),
         }));
