@@ -1,62 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../utils/firebaseConfig";
 
 const RoomBooking = () => {
-  const students = [
-    {
-      id: 1,
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      phone: "1234567890",
-      parentName: "Michael Doe",
-      parentPhone: "9876543210",
-      department: "BBA",
-      fees: "5000",
-    },
-    {
-      id: 2,
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane.smith@example.com",
-      phone: "0987654321",
-      parentName: "Laura Smith",
-      parentPhone: "8765432190",
-      department: "BCA",
-      fees: "6000",
-    },
-    // Add more students as needed
-  ];
-
+  const [students, setStudents] = useState([]); // List of students
+  const [filteredStudents, setFilteredStudents] = useState([]); // Filtered list based on search
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
+    age: "",
+    dept: "",
+    dob: "",
     email: "",
-    phone: "",
+    mobile: "",
     parentName: "",
-    parentPhone: "",
-    department: "",
+    parentContact: "",
     fees: "",
     roomType: "",
     checkInDate: "",
     checkOutDate: "",
     additionalNotes: "",
   });
-
   const [selectedStudentId, setSelectedStudentId] = useState("");
 
-  const handleStudentSelect = (e) => {
-    const studentId = e.target.value;
+  // Fetch list of students from Firestore
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(firestore, "users"));
+        const studentsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name, // Using "name" for dropdown
+        }));
+        setStudents(studentsData);
+        setFilteredStudents(studentsData); // Initialize the filtered list
+      } catch (error) {
+        console.error("Error fetching students: ", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  // Update filtered list based on search query
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = students.filter((student) =>
+        student.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredStudents(filtered);
+    } else {
+      setFilteredStudents(students);
+    }
+  }, [searchQuery, students]);
+
+  // Fetch details of the selected student
+  const handleStudentSelect = async (studentId) => {
     setSelectedStudentId(studentId);
 
     if (studentId) {
-      const selectedStudent = students.find((student) => student.id === parseInt(studentId, 10));
-      if (selectedStudent) {
-        setFormData({
-          ...formData,
-          ...selectedStudent, // Merge selected student details with the form data
-        });
+      try {
+        const studentDoc = await getDoc(doc(firestore, "users", studentId));
+        if (studentDoc.exists()) {
+          const studentData = studentDoc.data();
+          setFormData({
+            ...formData,
+            name: studentData.name || "", // Explicitly setting name to ensure it shows up in the form
+            age: studentData.age || "", // Adding fallback in case data is missing
+            dept: studentData.dept || "",
+            dob: studentData.dob || "",
+            email: studentData.email || "",
+            mobile: studentData.mobile || "",
+            parentName: studentData.parentName || "",
+            parentContact: studentData.parentContact || "",
+            fees: studentData.fees || "",
+            roomType: "", // Clear roomType on student select
+            checkInDate: "",
+            checkOutDate: "",
+            additionalNotes: studentData.additionalNotes || "",
+          });
+        } else {
+          console.error("No such student found!");
+        }
+      } catch (error) {
+        console.error("Error fetching student details: ", error);
       }
     }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   const handleChange = (e) => {
@@ -78,24 +111,35 @@ const RoomBooking = () => {
       <h1 className="text-3xl font-bold mb-8 text-center">Room Booking</h1>
 
       <form onSubmit={handleSubmit}>
-        {/* Student Selector */}
+        {/* Search Bar and Student Selector */}
         <div className="mb-8">
-          <label htmlFor="studentSelector" className="block text-sm font-medium mb-2">
-            Select Student
+          <label htmlFor="searchBar" className="block text-sm font-medium mb-2">
+            Search and Select Student
           </label>
-          <select
-            id="studentSelector"
-            value={selectedStudentId}
-            onChange={handleStudentSelect}
-            className="p-3 w-full border border-gray-300 rounded-md text-gray-900"
-          >
-            <option value="">Select a student...</option>
-            {students.map((student) => (
-              <option key={student.id} value={student.id}>
-                {`${student.firstName} ${student.lastName}`}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <input
+              type="text"
+              id="searchBar"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search by name..."
+              className="p-3 w-full border border-gray-300 rounded-md text-gray-900"
+            />
+            {/* Display dropdown of filtered students */}
+            {searchQuery && filteredStudents.length > 0 && (
+              <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
+                {filteredStudents.map((student) => (
+                  <div
+                    key={student.id}
+                    onClick={() => handleStudentSelect(student.id)}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
+                  >
+                    {student.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Personal Details */}
@@ -103,33 +147,61 @@ const RoomBooking = () => {
           <h2 className="text-2xl font-semibold mb-6">Personal Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium">
-                First Name
+              <label htmlFor="name" className="block text-sm font-medium">
+                Name
               </label>
               <input
                 type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
                 required
               />
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium">
-                Last Name
+              <label htmlFor="age" className="block text-sm font-medium">
+                Age
               </label>
               <input
                 type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
+                id="age"
+                name="age"
+                value={formData.age}
                 onChange={handleChange}
                 className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
                 required
               />
             </div>
+          </div>
+          <div className="mt-6">
+            <label htmlFor="dept" className="block text-sm font-medium">
+              Department
+            </label>
+            <input
+              type="text"
+              id="dept"
+              name="dept"
+              value={formData.dept}
+              onChange={handleChange}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
+              required
+            />
+          </div>
+          <div className="mt-6">
+            <label htmlFor="dob" className="block text-sm font-medium">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
+              required
+            />
           </div>
           <div className="mt-6">
             <label htmlFor="email" className="block text-sm font-medium">
@@ -146,24 +218,90 @@ const RoomBooking = () => {
             />
           </div>
           <div className="mt-6">
-            <label htmlFor="phone" className="block text-sm font-medium">
-              Phone Number
+            <label htmlFor="mobile" className="block text-sm font-medium">
+              Mobile Number
             </label>
             <input
               type="text"
-              id="phone"
-              name="phone"
-              value={formData.phone}
+              id="mobile"
+              name="mobile"
+              value={formData.mobile}
               onChange={handleChange}
               className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
               required
             />
           </div>
-        </section>  
+        </section>
 
-        {/* Other Sections (Parent Details, Booking Details, etc.) */}
-        {/* ... Add other sections here like in the original form ... */}
+        {/* Additional Details */}
+        <section className="mb-8">
+          <h2 className="text-2xl font-semibold mb-6">Booking Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="roomType" className="block text-sm font-medium">
+                Room Type
+              </label>
+              <select
+                id="roomType"
+                name="roomType"
+                value={formData.roomType}
+                onChange={handleChange}
+                className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
+                required
+              >
+                <option value="">Select Room Type</option>
+                <option value="single">Single</option>
+                <option value="double">Double</option>
+                <option value="suite">Suite</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="checkInDate" className="block text-sm font-medium">
+                Room Number
+              </label>
+              <select
 
+                id="roomNumber"
+                name="roomNumber"
+                value={formData.roomNumber}
+                onChange={handleChange}
+                className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
+                required
+              >
+                <option value="">Select room number </option>
+                <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <div className="mt-6">
+            <label htmlFor="checkOutDate" className="block text-sm font-medium">
+              Check-out Date
+            </label>
+            <input
+              type="date"
+              id="checkOutDate"
+              name="checkOutDate"
+              value={formData.checkOutDate}
+              onChange={handleChange}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
+              required
+            />
+          </div>
+          <div className="mt-6">
+            <label htmlFor="additionalNotes" className="block text-sm font-medium">
+              Additional Notes
+            </label>
+            <textarea
+              id="additionalNotes"
+              name="additionalNotes"
+              value={formData.additionalNotes}
+              onChange={handleChange}
+              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
+            ></textarea>
+          </div>
+        </section>
+
+        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 transition"

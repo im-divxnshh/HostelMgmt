@@ -8,6 +8,8 @@ import {
   FaShieldAlt,
   FaTachometerAlt,
 } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 import AddStudent from "../../components/adminComps/addStudent";
 import ManageRoom from "../../components/adminComps/manageRoom";
@@ -15,9 +17,25 @@ import Booking from "../../components/adminComps/booking";
 import EmergencySafety from "../../components/adminComps/emergency";
 import Rules from "../../components/adminComps/rules";
 import Fees from "../../components/adminComps/fees";
+import Attendence from "../../components/adminComps/attendence";
 
 function AdminDashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "Logged out successfully!",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    }).then(() => {
+      navigate("/");
+    });
+  };
 
   const renderContent = () => {
     switch (activeItem) {
@@ -66,115 +84,145 @@ function AdminDashboard() {
         return <Rules />;
       case "emergency":
         return <EmergencySafety />;
+      case "attendence":
+        return <Attendence />;
       default:
         return <p>Select a valid menu option.</p>;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-gray-100 to-gray-300 flex">
-      {/* Sidebar */}
-      <div className="w-72 bg-gradient-to-br from-indigo-700 to-purple-700 text-white p-6 shadow-lg">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold">Hostel Admin</h2>
-        </div>
-        <ul>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("dashboard")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "dashboard"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaTachometerAlt className="mr-3" />
-              Dashboard
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("students")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "students"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaUsers className="mr-3" />
-              Add Students
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("booking")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "booking"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaCalendarAlt className="mr-3" />
-              Booking & Reservation
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("rooms")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "rooms"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaBed className="mr-3" />
-              Manage Rooms
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("fees")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "fees"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaMoneyCheckAlt className="mr-3" />
-              Fees Management
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("rules")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "rules"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaClipboardList className="mr-3" />
-              Rules
-            </button>
-          </li>
-          <li className="mb-4">
-            <button
-              onClick={() => setActiveItem("emergency")}
-              className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                activeItem === "emergency"
-                  ? "bg-white text-indigo-700 shadow-md"
-                  : "hover:bg-indigo-600"
-              }`}
-            >
-              <FaShieldAlt className="mr-3" />
-              Emergency & Safety
-            </button>
-          </li>
-        </ul>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-6 flex justify-between items-center shadow-md">
+        <h1 className="text-2xl font-bold">Hostel Admin Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-red-700 transition-all"
+        >
+          Logout
+        </button>
+      </header>
 
-      {/* Main Content */}
-      <div className="flex-1 p-8">{renderContent()}</div>
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <div className="w-72 bg-gradient-to-br from-indigo-700 to-purple-700 text-white p-6 shadow-lg">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold">Hostel Admin</h2>
+          </div>
+          <ul>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("dashboard")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "dashboard"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaTachometerAlt className="mr-3" />
+                Dashboard
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("students")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "students"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaUsers className="mr-3" />
+                Add Students
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("booking")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "booking"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaCalendarAlt className="mr-3" />
+                Booking & Reservation
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("rooms")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "rooms"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaBed className="mr-3" />
+                Manage Rooms
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("fees")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "fees"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaMoneyCheckAlt className="mr-3" />
+                Fees Management
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("rules")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "rules"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaClipboardList className="mr-3" />
+                Rules
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("emergency")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "emergency"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaShieldAlt className="mr-3" />
+                Emergency & Safety
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
+                onClick={() => setActiveItem("attendence")}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
+                  activeItem === "attendence"
+                    ? "bg-white text-indigo-700 shadow-md"
+                    : "hover:bg-indigo-600"
+                }`}
+              >
+                <FaShieldAlt className="mr-3" />
+                Attendence
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 p-8 bg-gray-100 overflow-y-auto">
+          {renderContent()}
+        </div>
+      </div>
     </div>
   );
 }

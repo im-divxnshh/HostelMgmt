@@ -1,145 +1,195 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import { firestore } from "../../utils/firebaseConfig";
+import { collection, getDocs, doc, setDoc, updateDoc } from "firebase/firestore";
 
-const ManageRoom = () => {
-  // Room types and statuses
-  const roomStatuses = ["Available", "Occupied", "Under Maintenance"];
-
-  // State for room management
-  const [rooms, setRooms] = useState([
-    { id: 1, type: "Single", status: "Available", allocatedTo: "" },
-    { id: 2, type: "Double", status: "Occupied", allocatedTo: "Student A" },
-    { id: 3, type: "Triple", status: "Under Maintenance", allocatedTo: "" },
-    { id: 4, type: "Dormitory", status: "Available", allocatedTo: "" },
-  ]);
-
+const ManageRooms = () => {
+  const [rooms, setRooms] = useState([]);
+  const [newOccupant, setNewOccupant] = useState("");
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [allocatedStudent, setAllocatedStudent] = useState("");
 
-  // Handle room allocation
-  const handleRoomAllocation = (roomId) => {
-    if (!allocatedStudent) {
-      alert("Please enter the student's name to allocate the room.");
-      return;
+  // Fetch rooms from Firestore
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const roomCollection = await getDocs(collection(firestore, "rooms"));
+        setRooms(
+          roomCollection.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch rooms!",
+        });
+      }
+    };
+
+    fetchRooms();
+  }, []);
+
+  const handleAddRoom = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Add Room",
+      html:
+        '<input id="room-number" class="swal2-input" placeholder="Room Number">' +
+        '<select id="room-type" class="swal2-input">' +
+        '<option value="Single">Single</option>' +
+        '<option value="Double">Double</option>' +
+        "</select>",
+      focusConfirm: false,
+      preConfirm: () => {
+        const number = document.getElementById("room-number").value;
+        const type = document.getElementById("room-type").value;
+        return { number, type };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const roomId = `room-${rooms.length + 1}`;
+        const newRoom = {
+          name: formValues.number,
+          type: formValues.type,
+          status: "Available",
+          occupants: [],
+        };
+
+        await setDoc(doc(firestore, "rooms", roomId), newRoom);
+        setRooms([...rooms, { id: roomId, ...newRoom }]);
+        Swal.fire({
+          icon: "success",
+          title: "Room Added",
+          timer: 1500,
+          showConfirmButton: false,
+          toast: true,
+          position: "top-right",
+        });
+      } catch (error) {
+        console.error("Error adding room:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to add room!",
+        });
+      }
     }
-    setRooms((prevRooms) =>
-      prevRooms.map((room) =>
-        room.id === roomId
-          ? { ...room, status: "Occupied", allocatedTo: allocatedStudent }
-          : room
-      )
-    );
-    setAllocatedStudent(""); // Clear input after allocation
   };
 
-  // Handle room status change
-  const handleRoomStatusChange = (roomId, status) => {
-    setRooms((prevRooms) =>
-      prevRooms.map((room) =>
-        room.id === roomId ? { ...room, status } : room
-      )
-    );
+  const handleAddOccupant = async (roomId) => {
+    if (!newOccupant) return Swal.fire({ icon: "error", text: "Please enter an occupant name." });
+
+    try {
+      const roomRef = doc(firestore, "rooms", roomId);
+      const updatedRooms = rooms.map((room) => {
+        if (room.id === roomId) {
+          const updatedRoom = {
+            ...room,
+            status: "Occupied",
+            occupants: [...room.occupants, newOccupant],
+          };
+          updateDoc(roomRef, updatedRoom);
+          return updatedRoom;
+        }
+        return room;
+      });
+
+      setRooms(updatedRooms);
+      setNewOccupant("");
+      setSelectedRoom(null);
+    } catch (error) {
+      console.error("Error adding occupant:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to add occupant!",
+      });
+    }
   };
+
+  const handleRemoveOccupant = () =>{
+    
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-200 to-yellow-300 py-10 px-4">
-      <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-green-500 to-yellow-600 text-white text-center py-6">
-          <h1 className="text-3xl font-bold uppercase">Room Management</h1>
-          <p className="text-sm mt-2">Allocate rooms and manage room statuses</p>
-        </div>
+    <div className="min-h-screen bg-gray-100 p-5">
+      <h1 className="text-3xl font-bold text-center text-blue-500 mb-5">
+        Hostel Room Management System
+      </h1>
 
-        {/* Room Allocation Form */}
-        <div className="p-6 bg-gray-100 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-gray-700">Allocate Room</h2>
-          <p className="text-sm text-gray-500 mt-2">Select a room to allocate to a student.</p>
-          <div className="mt-4">
-            <input
-              type="text"
-              value={allocatedStudent}
-              onChange={(e) => setAllocatedStudent(e.target.value)}
-              placeholder="Enter student name"
-              className="px-4 py-2 border border-gray-300 rounded-lg w-full mt-2"
-            />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {rooms.map((room) => (
-              <div
-                key={room.id}
-                className={`p-4 rounded-lg shadow-md bg-${
-                  room.status === "Available"
-                    ? "green-100"
-                    : room.status === "Occupied"
-                    ? "red-100"
-                    : "yellow-100"
-                } hover:scale-105 transition-transform`}
-              >
-                <h3 className="text-lg font-semibold text-gray-800">Room {room.id}</h3>
-                <p className="text-gray-500">Type: {room.type}</p>
-                <p className="text-gray-500">Status: {room.status}</p>
-                {room.status === "Available" && (
-                  <button
-                    onClick={() => handleRoomAllocation(room.id)}
-                    className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-                  >
-                    Allocate Room
-                  </button>
-                )}
-                {room.status === "Occupied" && <p className="mt-2 text-red-600">Allocated to: {room.allocatedTo}</p>}
-                {room.status === "Under Maintenance" && (
-                  <button
-                    onClick={() => handleRoomStatusChange(room.id, "Available")}
-                    className="mt-4 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition"
-                  >
-                    Mark as Available
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="flex justify-between mb-5">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          onClick={handleAddRoom}
+        >
+          Add Room <i className="ml-2 fas fa-plus"></i>
+        </button>
+      </div>
 
-        {/* Room Status Tracker */}
-        <div className="p-6 mt-6 bg-gray-50 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold text-gray-700">Room Status Tracker</h2>
-          <p className="text-sm text-gray-500 mt-2">
-            Change room status to keep track of room availability.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {rooms.map((room) => (
-              <div
-                key={room.id}
-                className={`p-4 rounded-lg shadow-md bg-${
-                  room.status === "Available"
-                    ? "green-100"
-                    : room.status === "Occupied"
-                    ? "red-100"
-                    : "yellow-100"
-                }`}
-              >
-                <h3 className="text-lg font-semibold text-gray-800">Room {room.id}</h3>
-                <p className="text-gray-500">Type: {room.type}</p>
-                <p className="text-gray-500">Status: {room.status}</p>
-                <div className="mt-4">
-                  <select
-                    value={room.status}
-                    onChange={(e) => handleRoomStatusChange(room.id, e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg w-full"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {rooms.map((room) => (
+          <div
+            key={room.id}
+            className="bg-white shadow-md rounded-lg p-4 border border-gray-300"
+          >
+            <h2 className="text-xl font-semibold text-gray-700">
+              {room.name} ({room.type})
+            </h2>
+            <p
+              className={`text-sm mt-1 mb-3 font-medium ${
+                room.status === "Available" ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              Status: {room.status}
+            </p>
+
+            <ul className="list-disc ml-5 text-gray-600">
+              {room.occupants.map((occupant, index) => (
+                <li key={index} className="flex justify-between">
+                  {occupant}
+                  <button
+                    className="text-red-500 hover:underline text-sm"
+                    onClick={() => handleRemoveOccupant(room.id, occupant)}
                   >
-                    {roomStatuses.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            {selectedRoom === room.id ? (
+              <div className="mt-3">
+                <input
+                  type="text"
+                  value={newOccupant}
+                  onChange={(e) => setNewOccupant(e.target.value)}
+                  placeholder="Enter occupant name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                />
+                <button
+                  className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                  onClick={() => handleAddOccupant(room.id)}
+                >
+                  Add Occupant
+                </button>
               </div>
-            ))}
+            ) : (
+              <button
+                className="mt-3 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                onClick={() => setSelectedRoom(room.id)}
+              >
+                {room.status === "Available" ? "Add Occupant" : "Manage Occupants"}
+              </button>
+            )}
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default ManageRoom;
+export default ManageRooms;
