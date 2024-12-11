@@ -1,14 +1,78 @@
-import React, { useState } from "react";
-import { FaUsers, FaMoneyBillWave, FaClipboardList, FaBell, FaBook, FaUtensils, FaRegCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { 
+  FaUsers, 
+  FaMoneyBillWave, 
+  FaClipboardList, 
+  FaBell, 
+  FaBook, 
+  FaUtensils, 
+  FaRegCheckCircle, 
+  FaExclamationCircle 
+} from "react-icons/fa";
 import StudentProfile from "../../components/userComps/Profile";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { firestore } from "../../utils/firebaseConfig";
 import FeeManagement from "../../components/userComps/feesManagement";
 import HostelRules from "../../components/userComps/hostelRules";
 import Complaints from "../../components/userComps/complaints";
 import Attendance from "../../components/userComps/attendance";
 import Mess from "../../components/userComps/mess";
+import Dashboard from "../../components/userComps/dashboard";
 
 const UserDashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
+  const [userUID, setUserUID] = useState("");
+  const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log("Logged-in user's UID:", user.uid);
+        setUserUID(user.uid);
+
+        // Fetch additional user details from Firestore
+        try {
+          const userDocRef = doc(firestore, "users", user.uid); // Adjust collection name if needed
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            console.log("User Data from Firestore:", userData);
+            setUserName(userData.name || "User");
+          } else {
+            console.error("No user document found in Firestore!");
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      } else {
+        console.log("No user logged in.");
+        setUserUID("");
+        setUserName("");
+        navigate("/user-login"); // Redirect to login if no user is logged in
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        console.log("User logged out.");
+        navigate("/user-login");
+      })
+      .catch((error) => {
+        console.error("Error during logout:", error);
+      });
+  };
+
 
   const renderPageContent = () => {
     switch (activePage) {
@@ -28,25 +92,9 @@ const UserDashboard = () => {
       default:
         return (
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Overview</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="p-6 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg shadow-md transform hover:scale-105 transition">
-                <h3 className="text-sm font-medium">Total Students</h3>
-                <p className="text-3xl font-semibold">150</p>
-              </div>
-              <div className="p-6 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-lg shadow-md transform hover:scale-105 transition">
-                <h3 className="text-sm font-medium">Rooms Occupied</h3>
-                <p className="text-3xl font-semibold">120</p>
-              </div>
-              <div className="p-6 bg-gradient-to-br from-yellow-500 to-orange-600 text-white rounded-lg shadow-md transform hover:scale-105 transition">
-                <h3 className="text-sm font-medium">Pending Payments</h3>
-                <p className="text-3xl font-semibold">$3,200</p>
-              </div>
-              <div className="p-6 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-lg shadow-md transform hover:scale-105 transition">
-                <h3 className="text-sm font-medium">Maintenance Requests</h3>
-                <p className="text-3xl font-semibold">8</p>
-              </div>
-            </div>
+           
+              
+           <Dashboard/>
           </div>
         );
     }
@@ -144,10 +192,18 @@ const UserDashboard = () => {
       <div className="flex-1 p-8">
         {/* Header */}
         <header className="flex items-center justify-between pb-6 mb-6 border-b border-gray-300">
-          <h1 className="text-3xl font-bold text-gray-700">{activePage === "dashboard" ? "Dashboard" : activePage}</h1>
+          <h1 className="text-3xl font-bold text-gray-700">
+            {userName ? `Welcome, ${userName}` : "User Dashboard"}
+          </h1>
           <div className="flex items-center space-x-4">
             <button className="bg-gray-200 p-2 rounded-full hover:bg-gray-300">
               <FaBell />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Logout
             </button>
           </div>
         </header>

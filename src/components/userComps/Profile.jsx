@@ -1,52 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { auth, firestore } from '../../utils/firebaseConfig'; // Import Firebase config
+import { doc, getDoc } from 'firebase/firestore'; // Use Firestore methods
 
 const StudentProfile = () => {
-  // Example student data
-  const studentData = {
-    name: 'John Doe',
-    studentId: 'S123456',
-    email: 'johndoe@example.com',
-    age: 20,
-    Department: 'Computer Science',
-    year: 'Sophomore',
-    roomDetails: {
-      roomNumber: 'A-101',
-      hostelName: 'Maple Residence',
-      bedNumber: 'B-12',
-    },
+  const [studentData, setStudentData] = useState(null); // State to store student data
+  const [selectedSection, setSelectedSection] = useState('general'); // Active section for profile details
+  const [loading, setLoading] = useState(true); // Loading state to handle data fetching
+  const [error, setError] = useState(null); // State to store error messages
+
+  // Function to fetch student data from Firestore
+  const fetchStudentData = async () => {
+    try {
+      const user = auth.currentUser; // Get the currently authenticated user
+      if (user) {
+        const userId = user.uid; // Get user UID
+        const userRef = doc(firestore, 'users', userId); // Firestore reference for the user data
+        const snapshot = await getDoc(userRef); // Fetch data from Firestore
+
+        if (snapshot.exists()) {
+          setStudentData(snapshot.data()); // Set student data in state
+          console.log(snapshot.data()); // Log the fetched data for debugging
+        } else {
+          setError('No data available');
+        }
+      } else {
+        setError('No user is signed in');
+      }
+    } catch (error) {
+      setError('Error fetching student data: ' + error.message); // Set error message
+    } finally {
+      setLoading(false); // Set loading to false once data is fetched
+    }
   };
 
-  // State to manage which section to display
-  const [selectedSection, setSelectedSection] = useState('general');
+  // UseEffect to fetch student data once when the component mounts
+  useEffect(() => {
+    fetchStudentData();
+  }, []);
 
-  // Switch-case for rendering profile sections
+  // Function to render the selected section
   const renderSection = (section) => {
+    if (loading) return <p>Loading...</p>; // Show loading until data is fetched
+    if (error) return <p>{error}</p>; // Show error if any
+
+    if (!studentData) {
+      return <p>No student data available.</p>; // If student data is null or undefined
+    }
+
     switch (section) {
       case 'general':
         return (
           <div className="profile-section-content">
             <h2>General Information</h2>
-            <p><strong>Name:</strong> {studentData.name}</p>
-            <p><strong>Student ID:</strong> {studentData.studentId}</p>
-            <p><strong>Email:</strong> {studentData.email}</p>
+            <p><strong>Name:</strong> {studentData.name || 'N/A'}</p>
+            <p><strong>Student ID:</strong> {studentData.studentId || 'N/A'}</p>
+            <p><strong>Email:</strong> {studentData.email || 'N/A'}</p>
+            <p><strong>Mobile:</strong> {studentData.mobile || 'N/A'}</p>
+            <p><strong>Parent Name:</strong> {studentData.parentName || 'N/A'}</p>
+            <p><strong>Parent Contact:</strong> {studentData.parentContact || 'N/A'}</p>
           </div>
         );
       case 'academic':
         return (
           <div className="profile-section-content">
             <h2>Academic Details</h2>
-            <p><strong>Department:</strong> {studentData.Department}</p>
-            <p><strong>Year:</strong> {studentData.year}</p>
-            <p><strong>Age:</strong> {studentData.age}</p>
+            <p><strong>Department:</strong> {studentData.dept || 'N/A'}</p>
           </div>
         );
       case 'room':
         return (
           <div className="profile-section-content">
             <h2>Room Details</h2>
-            <p><strong>Room Number:</strong> {studentData.roomDetails.roomNumber}</p>
-            <p><strong>Hostel Name:</strong> {studentData.roomDetails.hostelName}</p>
-            <p><strong>Bed Number:</strong> {studentData.roomDetails.bedNumber}</p>
+            <p><strong>Hostel Name:</strong> {studentData.hostelName || 'N/A'}</p>
+            <p><strong>Room Number:</strong> {studentData.roomNumber || 'N/A'}</p>
+            <p><strong>Floor:</strong> {studentData.floor || 'N/A'}</p>
+            <p><strong>Room Type:</strong> {studentData.roomType || 'N/A'}</p>
+            <p><strong>Occupants:</strong> {studentData.occupants || 'N/A'}</p>
           </div>
         );
       default:
@@ -58,21 +87,21 @@ const StudentProfile = () => {
     <div className="student-profile-container">
       <h1>Student Profile</h1>
       
-      {/* Navigation */}
+      {/* Navigation buttons for sections */}
       <div className="profile-button-container">
-        <button 
+        <button
           onClick={() => setSelectedSection('general')}
           className={selectedSection === 'general' ? 'profile-active' : ''}
         >
           General Information
         </button>
-        <button 
+        <button
           onClick={() => setSelectedSection('academic')}
           className={selectedSection === 'academic' ? 'profile-active' : ''}
         >
           Academic Details
         </button>
-        <button 
+        <button
           onClick={() => setSelectedSection('room')}
           className={selectedSection === 'room' ? 'profile-active' : ''}
         >
@@ -83,7 +112,7 @@ const StudentProfile = () => {
       {/* Render selected section */}
       {renderSection(selectedSection)}
 
-      {/* Scoped CSS */}
+      {/* Scoped CSS for styling */}
       <style>
         {`
           .student-profile-container {

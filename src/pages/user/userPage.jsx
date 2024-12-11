@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TextField, Button, IconButton } from '@mui/material';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import Swal from 'sweetalert2'; // SweetAlert2
 import { useNavigate } from 'react-router-dom'; // Navigation
+import Swal from 'sweetalert2'; // SweetAlert2 import
 
 function AuthPage() {
   // States for form data
@@ -17,7 +17,6 @@ function AuthPage() {
   // Initialize navigate
   const navigate = useNavigate();
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -35,30 +34,33 @@ function AuthPage() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
 
-      // Show SweetAlert notification
+      // Show success notification in top-right corner
       Swal.fire({
-        position: 'top-end',
         icon: 'success',
         title: 'Login Successful!',
+        text: 'You have successfully logged in.',
+        position: 'top-end',
+        toast: true,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
+        timerProgressBar: true,
       });
 
       // Navigate to user dashboard
-      setTimeout(() => {
-        navigate('/user-dashboard');
-      }, 1500); // Wait for alert to disappear before navigating
+      navigate('/user-dashboard');
     } catch (error) {
       console.error('Login failed:', error.message);
 
-      // Show SweetAlert error notification
+      // Show error notification in top-right corner
       Swal.fire({
-        position: 'top-end',
         icon: 'error',
         title: 'Login Failed',
         text: error.message,
+        position: 'top-end',
+        toast: true,
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
+        timerProgressBar: true,
       });
     }
   };
