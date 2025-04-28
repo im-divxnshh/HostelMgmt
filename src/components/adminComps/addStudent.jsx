@@ -5,7 +5,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-const ManageStudent= () => {
+const AddStudent = () => {
   const [students, setStudents] = useState([]);
   const [studentData, setStudentData] = useState(initialStudentState());
   const [loading, setLoading] = useState(false);
@@ -241,4 +241,4 @@ const ManageStudent= () => {
   );
 };
 
-export default ManageStudent;
+export default AddStudent;
