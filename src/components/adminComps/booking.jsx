@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import Swal from "sweetalert2";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 
+const ROOM_CAPACITY = { single: 1, double: 2, suite: 4 };
+
 const RoomBooking = () => {
-  const [students, setStudents] = useState([]); // List of students
-  const [filteredStudents, setFilteredStudents] = useState([]); // Filtered list based on search
-  const [searchQuery, setSearchQuery] = useState(""); // Search query state
+  const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [availableRooms, setAvailableRooms] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -17,297 +30,257 @@ const RoomBooking = () => {
     parentContact: "",
     fees: "",
     roomType: "",
+    roomNumber: "",
     checkInDate: "",
     checkOutDate: "",
     additionalNotes: "",
   });
-  const [selectedStudentId, setSelectedStudentId] = useState("");
 
-  // Fetch list of students from Firestore
   useEffect(() => {
     const fetchStudents = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(firestore, "users"));
-        const studentsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name, // Using "name" for dropdown
-        }));
-        setStudents(studentsData);
-        setFilteredStudents(studentsData); // Initialize the filtered list
-      } catch (error) {
-        console.error("Error fetching students: ", error);
-      }
+      const snapshot = await getDocs(collection(firestore, "users"));
+      const list = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+      }));
+      setStudents(list);
+      setFilteredStudents(list);
     };
-
     fetchStudents();
   }, []);
 
-  // Update filtered list based on search query
   useEffect(() => {
     if (searchQuery) {
-      const filtered = students.filter((student) =>
-        student.name.toLowerCase().includes(searchQuery.toLowerCase())
+      setFilteredStudents(
+        students.filter((s) =>
+          s.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
       );
-      setFilteredStudents(filtered);
     } else {
       setFilteredStudents(students);
     }
   }, [searchQuery, students]);
 
-  // Fetch details of the selected student
-  const handleStudentSelect = async (studentId) => {
-    setSelectedStudentId(studentId);
+  const handleStudentSelect = async (id) => {
+    setSelectedStudentId(id);
+    setSearchQuery("");
 
-    if (studentId) {
-      try {
-        const studentDoc = await getDoc(doc(firestore, "users", studentId));
-        if (studentDoc.exists()) {
-          const studentData = studentDoc.data();
-          setFormData({
-            ...formData,
-            name: studentData.name || "", // Explicitly setting name to ensure it shows up in the form
-            age: studentData.age || "", // Adding fallback in case data is missing
-            dept: studentData.dept || "",
-            dob: studentData.dob || "",
-            email: studentData.email || "",
-            mobile: studentData.mobile || "",
-            parentName: studentData.parentName || "",
-            parentContact: studentData.parentContact || "",
-            fees: studentData.fees || "",
-            roomType: "", // Clear roomType on student select
-            checkInDate: "",
-            checkOutDate: "",
-            additionalNotes: studentData.additionalNotes || "",
-          });
-        } else {
-          console.error("No such student found!");
-        }
-      } catch (error) {
-        console.error("Error fetching student details: ", error);
-      }
+    const docSnap = await getDoc(doc(firestore, "users", id));
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      setFormData((prev) => ({
+        ...prev,
+        name: data.name || "",
+        age: data.age || "",
+        dept: data.dept || "",
+        dob: data.dob || "",
+        email: data.email || "",
+        mobile: data.mobile || "",
+        parentName: data.parentName || "",
+        parentContact: data.parentContact || "",
+        fees: data.fees || "",
+        additionalNotes: data.additionalNotes || "",
+      }));
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (!formData.roomType) return setAvailableRooms([]);
+
+      const snapshot = await getDocs(collection(firestore, "rooms"));
+      const rooms = snapshot.docs
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((room) => {
+          const assigned = room.studentsAssigned?.length || 0;
+          return (
+            room.type === formData.roomType &&
+            assigned < ROOM_CAPACITY[formData.roomType]
+          );
+        });
+      setAvailableRooms(rooms);
+    };
+    fetchRooms();
+  }, [formData.roomType]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert("Form submitted successfully!");
+    if (!selectedStudentId || !formData.roomNumber) {
+      return Swal.fire("Missing Information", "Please select student and room", "warning");
+    }
+
+    const roomRef = doc(firestore, "rooms", formData.roomNumber);
+    const roomSnap = await getDoc(roomRef);
+    const roomData = roomSnap.data();
+    const assigned = roomData.studentsAssigned || [];
+
+    if (assigned.length >= ROOM_CAPACITY[formData.roomType]) {
+      return Swal.fire("Room Full", "Choose another room", "error");
+    }
+
+    await setDoc(
+      doc(firestore, "users", selectedStudentId, "roomAlloted", formData.roomNumber),
+      {
+        roomType: formData.roomType,
+        checkInDate: formData.checkInDate,
+        checkOutDate: formData.checkOutDate,
+        additionalNotes: formData.additionalNotes,
+      }
+    );
+
+    await updateDoc(roomRef, {
+      studentsAssigned: [...assigned, selectedStudentId],
+    });
+
+    Swal.fire("Success", "Room Booked Successfully", "success");
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-xl">
-      <h1 className="text-3xl font-bold mb-8 text-center">Room Booking</h1>
+    <div className="max-w-4xl mx-auto mt-10 bg-white shadow-xl rounded-lg p-8">
+      <h2 className="text-3xl font-bold text-center mb-8 text-blue-600">
+        🏨 Room Booking System
+      </h2>
 
-      <form onSubmit={handleSubmit}>
-        {/* Search Bar and Student Selector */}
-        <div className="mb-8">
-          <label htmlFor="searchBar" className="block text-sm font-medium mb-2">
-            Search and Select Student
-          </label>
-          <div className="relative">
+      {/* Student Search */}
+      <div className="mb-6 relative">
+        <label className="block text-lg font-medium text-gray-700 mb-1">
+          Search Student
+        </label>
+        <input
+          type="text"
+          placeholder="Enter student name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400"
+        />
+        {searchQuery && (
+          <ul className="absolute z-10 bg-white border w-full rounded-md mt-1 max-h-60 overflow-y-auto shadow-md">
+            {filteredStudents.map((s) => (
+              <li
+                key={s.id}
+                onClick={() => handleStudentSelect(s.id)}
+                className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+              >
+                {s.name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Booking Form */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[
+          { name: "name", label: "Name" },
+          { name: "age", label: "Age" },
+          { name: "dept", label: "Department" },
+          { name: "dob", label: "Date of Birth", type: "date" },
+          { name: "email", label: "Email" },
+          { name: "mobile", label: "Mobile" },
+          { name: "parentName", label: "Parent Name" },
+          { name: "parentContact", label: "Parent Contact" },
+          { name: "fees", label: "Fees" },
+        ].map(({ name, label, type = "text" }) => (
+          <div key={name}>
+            <label className="block text-gray-700 font-medium mb-1">{label}</label>
             <input
-              type="text"
-              id="searchBar"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search by name..."
-              className="p-3 w-full border border-gray-300 rounded-md text-gray-900"
+              type={type}
+              name={name}
+              value={formData[name]}
+              onChange={handleChange}
+              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
             />
-            {/* Display dropdown of filtered students */}
-            {searchQuery && filteredStudents.length > 0 && (
-              <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
-                {filteredStudents.map((student) => (
-                  <div
-                    key={student.id}
-                    onClick={() => handleStudentSelect(student.id)}
-                    className="p-2 cursor-pointer hover:bg-gray-100"
-                  >
-                    {student.name}
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
+        ))}
+
+        {/* Room Type */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">Room Type</label>
+          <select
+            name="roomType"
+            value={formData.roomType}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          >
+            <option value="">-- Select Type --</option>
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="suite">Suite</option>
+          </select>
         </div>
 
-        {/* Personal Details */}
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-6">Personal Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="age" className="block text-sm font-medium">
-                Age
-              </label>
-              <input
-                type="text"
-                id="age"
-                name="age"
-                value={formData.age}
-                onChange={handleChange}
-                className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-                required
-              />
-            </div>
-          </div>
-          <div className="mt-6">
-            <label htmlFor="dept" className="block text-sm font-medium">
-              Department
-            </label>
-            <input
-              type="text"
-              id="dept"
-              name="dept"
-              value={formData.dept}
-              onChange={handleChange}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-              required
-            />
-          </div>
-          <div className="mt-6">
-            <label htmlFor="dob" className="block text-sm font-medium">
-              Date of Birth
-            </label>
-            <input
-              type="date"
-              id="dob"
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-              required
-            />
-          </div>
-          <div className="mt-6">
-            <label htmlFor="email" className="block text-sm font-medium">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-              required
-            />
-          </div>
-          <div className="mt-6">
-            <label htmlFor="mobile" className="block text-sm font-medium">
-              Mobile Number
-            </label>
-            <input
-              type="text"
-              id="mobile"
-              name="mobile"
-              value={formData.mobile}
-              onChange={handleChange}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-              required
-            />
-          </div>
-        </section>
+        {/* Room Number */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">Room Number</label>
+          <select
+            name="roomNumber"
+            value={formData.roomNumber}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          >
+            <option value="">-- Select Room --</option>
+            {availableRooms.map((room) => (
+              <option key={room.id} value={room.id}>
+                {room.name} ({room.studentsAssigned?.length || 0}/
+                {ROOM_CAPACITY[room.type]})
+              </option>
+            ))}
+          </select>
+        </div>
 
-        {/* Additional Details */}
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-6">Booking Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="roomType" className="block text-sm font-medium">
-                Room Type
-              </label>
-              <select
-                id="roomType"
-                name="roomType"
-                value={formData.roomType}
-                onChange={handleChange}
-                className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-                required
-              >
-                <option value="">Select Room Type</option>
-                <option value="single">Single</option>
-                <option value="double">Double</option>
-                <option value="suite">Suite</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="checkInDate" className="block text-sm font-medium">
-                Room Number
-              </label>
-              <select
+        {/* Check-in / out */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">Check-in Date</label>
+          <input
+            type="date"
+            name="checkInDate"
+            value={formData.checkInDate}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
 
-                id="roomNumber"
-                name="roomNumber"
-                value={formData.roomNumber}
-                onChange={handleChange}
-                className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-                required
-              >
-                <option value="">Select room number </option>
-                <option value=""></option>
-              </select>
-            </div>
-          </div>
-          <div className="mt-6">
-            <label htmlFor="checkOutDate" className="block text-sm font-medium">
-              Check-out Date
-            </label>
-            <input
-              type="date"
-              id="checkOutDate"
-              name="checkOutDate"
-              value={formData.checkOutDate}
-              onChange={handleChange}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-              required
-            />
-          </div>
-          <div className="mt-6">
-            <label htmlFor="additionalNotes" className="block text-sm font-medium">
-              Additional Notes
-            </label>
-            <textarea
-              id="additionalNotes"
-              name="additionalNotes"
-              value={formData.additionalNotes}
-              onChange={handleChange}
-              className="mt-1 p-3 w-full border border-gray-300 rounded-md text-gray-900"
-            ></textarea>
-          </div>
-        </section>
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">Check-out Date</label>
+          <input
+            type="date"
+            name="checkOutDate"
+            value={formData.checkOutDate}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 transition"
-        >
-          Submit
-        </button>
+        {/* Notes */}
+        <div className="md:col-span-2">
+          <label className="block text-gray-700 font-medium mb-1">Additional Notes</label>
+          <textarea
+            name="additionalNotes"
+            value={formData.additionalNotes}
+            onChange={handleChange}
+            className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            rows={3}
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-300"
+          >
+            🚀 Book Room
+          </button>
+        </div>
       </form>
     </div>
   );

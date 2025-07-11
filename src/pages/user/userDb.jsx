@@ -16,11 +16,10 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "../../utils/firebaseConfig";
 import FeeManagement from "../../components/userComps/feesManagement";
 import HostelRules from "../../components/userComps/hostelRules";
-import Complaints from "../../components/userComps/complaints";
 import Attendance from "../../components/userComps/attendance";
 import Mess from "../../components/userComps/mess";
 import Dashboard from "../../components/userComps/dashboard";
-
+import Complaints from '../../components/userComps/addComplaints';
 const UserDashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
   const [userUID, setUserUID] = useState("");

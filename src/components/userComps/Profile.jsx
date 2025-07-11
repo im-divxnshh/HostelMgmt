@@ -53,7 +53,6 @@ const StudentProfile = () => {
           <div className="profile-section-content">
             <h2>General Information</h2>
             <p><strong>Name:</strong> {studentData.name || 'N/A'}</p>
-            <p><strong>Student ID:</strong> {studentData.studentId || 'N/A'}</p>
             <p><strong>Email:</strong> {studentData.email || 'N/A'}</p>
             <p><strong>Mobile:</strong> {studentData.mobile || 'N/A'}</p>
             <p><strong>Parent Name:</strong> {studentData.parentName || 'N/A'}</p>
@@ -71,7 +70,6 @@ const StudentProfile = () => {
         return (
           <div className="profile-section-content">
             <h2>Room Details</h2>
-            <p><strong>Hostel Name:</strong> {studentData.hostelName || 'N/A'}</p>
             <p><strong>Room Number:</strong> {studentData.roomNumber || 'N/A'}</p>
             <p><strong>Floor:</strong> {studentData.floor || 'N/A'}</p>
             <p><strong>Room Type:</strong> {studentData.roomType || 'N/A'}</p>

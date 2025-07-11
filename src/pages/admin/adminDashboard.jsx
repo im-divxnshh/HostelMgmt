@@ -7,6 +7,8 @@ import {
   FaClipboardList,
   FaShieldAlt,
   FaTachometerAlt,
+  FaExclamationCircle
+
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +20,7 @@ import EmergencySafety from "../../components/adminComps/emergency";
 import Rules from "../../components/adminComps/rules";
 import Fees from "../../components/adminComps/fees";
 import Attendence from "../../components/adminComps/attendence";
+import Complaints from "../../components/adminComps/complaints";
 
 function AdminDashboard() {
   const [activeItem, setActiveItem] = useState("dashboard");
@@ -86,6 +89,8 @@ function AdminDashboard() {
         return <EmergencySafety />;
       case "attendence":
         return <Attendence />;
+      case "complaints":
+        return <div><Complaints /></div>;
       default:
         return <p>Select a valid menu option.</p>;
     }
@@ -114,11 +119,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("dashboard")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "dashboard"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "dashboard"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaTachometerAlt className="mr-3" />
                 Dashboard
@@ -127,11 +131,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("students")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "students"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "students"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaUsers className="mr-3" />
                 Add Students
@@ -140,11 +143,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("booking")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "booking"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "booking"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaCalendarAlt className="mr-3" />
                 Booking & Reservation
@@ -152,12 +154,21 @@ function AdminDashboard() {
             </li>
             <li className="mb-4">
               <button
+                onClick={() => setActiveItem("complaints")}
+                className={`flex items-center space-x-3 w-full px-4 py-2 text-left rounded-lg transition ${activeItem === "complaints" ? "bg-blue-700" : "hover:bg-gray-700"
+                  }`}
+              >
+                <FaExclamationCircle />
+                <span>Complaints</span>
+              </button>
+            </li>
+            <li className="mb-4">
+              <button
                 onClick={() => setActiveItem("rooms")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "rooms"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "rooms"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaBed className="mr-3" />
                 Manage Rooms
@@ -166,11 +177,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("fees")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "fees"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "fees"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaMoneyCheckAlt className="mr-3" />
                 Fees Management
@@ -179,11 +189,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("rules")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "rules"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "rules"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaClipboardList className="mr-3" />
                 Rules
@@ -192,11 +201,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("emergency")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "emergency"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "emergency"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaShieldAlt className="mr-3" />
                 Emergency & Safety
@@ -205,11 +213,10 @@ function AdminDashboard() {
             <li className="mb-4">
               <button
                 onClick={() => setActiveItem("attendence")}
-                className={`flex items-center text-lg p-3 rounded-lg transition-all ${
-                  activeItem === "attendence"
-                    ? "bg-white text-indigo-700 shadow-md"
-                    : "hover:bg-indigo-600"
-                }`}
+                className={`flex items-center text-lg p-3 rounded-lg transition-all ${activeItem === "attendence"
+                  ? "bg-white text-indigo-700 shadow-md"
+                  : "hover:bg-indigo-600"
+                  }`}
               >
                 <FaShieldAlt className="mr-3" />
                 Attendence

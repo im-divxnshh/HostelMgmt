@@ -3,27 +3,27 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { Eye, EyeOff } from 'lucide-react'; // Modern icons
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState(''); // Store email input
-  const [password, setPassword] = useState(''); // Store password input
-  const [loading, setLoading] = useState(false); // Display loading state
-  const navigate = useNavigate(); // Handle navigation after login
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading state
+    setLoading(true);
 
-    const auth = getAuth(); // Initialize Firebase Auth instance
+    const auth = getAuth();
 
     try {
-      // Authenticate the user
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       console.log('Login successful:', user);
 
-      // Show success toast
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -34,12 +34,10 @@ const AdminLogin = () => {
         timerProgressBar: true,
       });
 
-      // Navigate to the admin dashboard upon successful login
       navigate('/admin-dashboard');
     } catch (err) {
       console.error('Login error:', err);
 
-      // Show error toast
       Swal.fire({
         toast: true,
         position: 'top-end',
@@ -51,52 +49,89 @@ const AdminLogin = () => {
         timerProgressBar: true,
       });
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white px-4">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Input */}
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700">Email</label>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email Address
+            </label>
             <input
-              type="email"
               id="email"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
+              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
           {/* Password Input */}
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="relative mt-1">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-blue-600"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className={`bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 w-full ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition duration-300 ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    ></path>
+                  </svg>
+                  Logging in...
+                </>
+              ) : (
+                'Login'
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>
